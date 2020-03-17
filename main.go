@@ -2,22 +2,14 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
+	"ginEssential/common/util"
+	"ginEssential/model"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 )
-
-// User 用户
-type User struct {
-	gorm.Model
-	Name      string `gorm:"type:varchar(20);not null;"`
-	Password  string `gorm:"type:varchar(100);not null;"`
-	Telephone string `gorm:"type:varchar(110);not null;unique;"`
-}
 
 func main() {
 	db := InitDB()
@@ -44,7 +36,7 @@ func main() {
 		}
 
 		if len(name) == 0 {
-			name = randomString(10)
+			name = util.RandomString(10)
 		}
 
 		// 判断手机号
@@ -54,7 +46,7 @@ func main() {
 		}
 
 		// 创建用户
-		newUser := User{
+		newUser := model.User{
 			Name:      name,
 			Telephone: telephone,
 			Password:  password,
@@ -70,25 +62,13 @@ func main() {
 }
 
 func isTelePhoneExist(db *gorm.DB, telephone string) bool {
-	var user User
+	var user model.User
 	db.Where("telephone = ?", telephone).First(&user)
 	if user.ID != 0 {
 		return true
 	}
 
 	return false
-}
-
-func randomString(n int) string {
-	letters := []byte("asdfasGUYGUdsadOAAsfmcsoferafsfzvsgg")
-	result := make([]byte, n)
-
-	rand.Seed(time.Now().Unix())
-	for i := range result {
-		result[i] = letters[rand.Intn(len(letters))]
-	}
-
-	return string(result)
 }
 
 // InitDB mysql 初始化
@@ -113,6 +93,6 @@ func InitDB() *gorm.DB {
 		panic("fail to connect mysql: err: " + err.Error())
 	}
 
-	db.AutoMigrate(&User{})
+	db.AutoMigrate(&model.User{})
 	return db
 }
