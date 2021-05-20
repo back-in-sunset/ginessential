@@ -7,7 +7,7 @@ import (
 
 // RandomString 随机字符串
 func RandomString(n int) string {
-	letters := []byte("asdfasGUYGUdsadOAAsfmcsoferafsfzvsgg")
+	letters := []byte("asdfasGUYGUdsadOAAsfmcs986354234189oferafsfzvsgg")
 	result := make([]byte, n)
 
 	rand.Seed(time.Now().Unix())
