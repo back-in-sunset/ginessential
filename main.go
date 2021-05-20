@@ -2,17 +2,26 @@ package main
 
 import (
 	"gin-essential/dao"
+	"gin-essential/router"
 	"net/http"
-
-	"github.com/gin-gonic/gin"
+	"time"
 )
 
 func main() {
-	engine := gin.New()
 	dao.InitDB()
+	e := router.Init()
 
-	http.ListenAndServe(":8080", engine)
+	srv := &http.Server{
+		Addr:         ":8080",
+		Handler:      e,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		IdleTimeout:  15 * time.Second,
+	}
 
-	// r.POST("/api/auth/register", router.User.Register())
-	// r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	err := srv.ListenAndServe()
+	if err != nil {
+		panic(err)
+	}
+
 }

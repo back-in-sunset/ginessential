@@ -16,5 +16,4 @@ func (a *PostgresDB) IsTelePhoneExist(telephone string) bool {
 // Register 注册
 func (a *PostgresDB) Register(newUser model.User) {
 	a.Create(&newUser)
-
 }

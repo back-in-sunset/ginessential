@@ -12,8 +12,8 @@ type PostgresDB struct {
 	*gorm.DB
 }
 
-// PostgresDBee 实例化
-var pgDB PostgresDB
+// PgDB 实例化
+var PgDB PostgresDB
 
 // InitDB mysql 初始化
 func InitDB() {
@@ -24,5 +24,5 @@ func InitDB() {
 	}
 
 	db.AutoMigrate(model.User{})
-	pgDB.DB = db
+	PgDB.DB = db
 }

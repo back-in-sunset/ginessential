@@ -14,6 +14,14 @@ type User struct {
 	userDB dao.PostgresDB
 }
 
+// Init gin
+func Init() http.Handler {
+	e := gin.New()
+	u := User{dao.PgDB}
+	e.POST("api/auth/register", u.Register)
+	return e
+}
+
 // Register 注册
 func (a *User) Register(c *gin.Context) {
 	// 获取参数
