@@ -14,14 +14,6 @@ type User struct {
 	userDB dao.PostgresDB
 }
 
-// Init gin
-func Init() http.Handler {
-	e := gin.New()
-	u := User{dao.PgDB}
-	e.POST("api/auth/register", u.Register)
-	return e
-}
-
 // Register 注册
 func (a *User) Register(c *gin.Context) {
 	// 获取参数
@@ -63,8 +55,17 @@ func (a *User) Register(c *gin.Context) {
 	}
 
 	a.userDB.Register(newUser)
+
 	// 返回结果
 	c.JSON(200, gin.H{
 		"msg": "注册成功",
 	})
+}
+
+// NatsMessage ..
+func (a *User) NatsMessage(c *gin.Context) {
+	c.JSON(200, gin.H{
+		"msg": "注册成功",
+	})
+
 }
