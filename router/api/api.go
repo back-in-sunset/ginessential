@@ -1,9 +1,9 @@
-package router
+package api
 
 import (
 	"gin-essential/common/util"
 	"gin-essential/dao"
-	"gin-essential/model"
+	"gin-essential/model/entity"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -11,7 +11,7 @@ import (
 
 // User 用户
 type User struct {
-	userDB dao.PostgresDB
+	UserDB dao.PostgresDB
 }
 
 // Register 注册
@@ -37,7 +37,7 @@ func (a *User) Register(c *gin.Context) {
 	}
 
 	// 判断手机号
-	if a.userDB.IsTelePhoneExist(telephone) {
+	if a.UserDB.IsTelePhoneExist(telephone) {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"code": 422, "msg": "user has existed"})
 		return
 	}
@@ -48,13 +48,13 @@ func (a *User) Register(c *gin.Context) {
 		return
 	}
 	// 创建用户
-	newUser := model.User{
+	newUser := entity.User{
 		Name:      name,
 		Telephone: telephone,
 		Password:  dkpassword,
 	}
 
-	a.userDB.Register(newUser)
+	a.UserDB.Register(newUser)
 
 	// 返回结果
 	c.JSON(200, gin.H{
