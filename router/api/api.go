@@ -54,8 +54,10 @@ func (a *User) Register(c *gin.Context) {
 		Password:  dkpassword,
 	}
 
-	a.UserDB.Register(newUser)
-
+	err = a.UserDB.Register(newUser)
+	if err != nil {
+		panic(err)
+	}
 	// 返回结果
 	c.JSON(200, gin.H{
 		"msg": "注册成功",

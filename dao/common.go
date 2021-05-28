@@ -4,6 +4,7 @@ import (
 	"gin-essential/model/entity"
 	"log"
 	"os"
+	"sync"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -21,16 +22,23 @@ var PgDB PostgresDB
 
 // InitDB mysql 初始化
 func InitDB() {
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		panic(err)
-	}
+	var once sync.Once
 
-	db.AutoMigrate(entity.User{})
-	if os.Getenv("GOENV") == "dev" {
-		log.Println("[INFO]> DB Starting.... IN Debug Mode ")
-		db.Debug()
-	}
+	once.Do(
+		func() {
+			db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+			if err != nil {
+				panic(err)
+			}
 
-	PgDB.DB = db
+			db.AutoMigrate(entity.User{})
+			if os.Getenv("GOENV") == "dev" {
+				log.Println("[INFO]> DB Starting.... IN Debug Mode ")
+				db.Debug()
+			}
+
+			PgDB.DB = db
+		},
+	)
+
 }

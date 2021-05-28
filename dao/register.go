@@ -16,7 +16,7 @@ func (a *PostgresDB) IsTelePhoneExist(telephone string) bool {
 // Register 注册
 func (a *PostgresDB) Register(newUser entity.User) error {
 	a.Create(&newUser)
-	if err := a.DB.Error; err != nil {
+	if err := a.Error; err != nil {
 		return err
 	}
 	return nil

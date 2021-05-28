@@ -17,19 +17,6 @@ var (
 	natsURL   string = "nats://127.0.0.1:4222"
 )
 
-// PubSub ..
-func PubSub() {
-	go Publisher()
-	go Subscriber1()
-	go Subscriber2()
-}
-
-// PubSubWithReply ..
-func PubSubWithReply() {
-	Subscriber()
-	PublisherReply()
-}
-
 // Publisher ..
 func Publisher() {
 	nc, err := nats.Connect(natsURL)
@@ -170,7 +157,7 @@ func SubscriberAck() {
 	}
 
 	i := 0
-	_, err = sc.Subscribe("foo1",
+	_, err = sc.Subscribe("ack",
 		func(m *stan.Msg) {
 			i++
 			log.Println("[INFO] SubscriberAck subscribe:", i, "---->", m.Subject, m)
@@ -183,15 +170,54 @@ func SubscriberAck() {
 
 }
 
-func main() {
-	// PubSubWithReply()
-	// // 创建一个channel，阻塞着
-	// signalChan := make(chan int)
-	// <-signalChan
+// PubscriberAck ..
+func PubscriberAck() {
+	nc, err := nats.Connect(natsURL)
+	if err != nil {
+		log.Fatal(err)
+	}
 
+	sc, err := stan.Connect(clusterID, clientID, stan.NatsConn(nc))
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+
+	// 开启一个协程，不停的生产数据
+	go func() {
+		m := 0
+		for {
+			m++
+			sc.Publish("ack", []byte("ack message "+strconv.Itoa(m)))
+			time.Sleep(time.Second)
+			break
+		}
+
+	}()
+
+}
+
+// PubSub 一对多
+func PubSub() {
+	go Publisher()
+	go Subscriber1()
+	go Subscriber2()
+}
+
+// PubSubWithReply ..
+func PubSubWithReply() {
+	Subscriber()
+	PublisherReply()
+}
+
+// PubSubWithManualAck 一对多手动ack
+func PubSubWithManualAck() {
 	SubscriberAck()
-	Publisher()
-	Subscriber1()
+	PubscriberAck()
+}
+func main() {
+	PubSubWithManualAck()
+
 	// 创建一个channel，阻塞着
 	signalChan := make(chan int)
 	<-signalChan
