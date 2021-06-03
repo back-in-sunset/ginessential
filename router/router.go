@@ -12,7 +12,15 @@ import (
 func Init() http.Handler {
 	e := gin.New()
 	u := api.User{UserDB: dao.PgDB}
-	e.POST("api/auth/register", u.Register)
-	e.POST("api/auth/msg", u.NatsMessage)
+	// e.Use()
+	e.GET("heart_beat", func(c *gin.Context) {
+		c.JSON(200, gin.H{"msg": "ok"})
+	})
+	auth := e.Group("api/auth")
+	{
+		auth.POST("register", u.Register)
+		auth.POST("msg", u.NatsMessage)
+	}
+
 	return e
 }

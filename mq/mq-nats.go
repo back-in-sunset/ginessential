@@ -131,8 +131,8 @@ func Subscriber() {
 
 }
 
-// PublisherReply ..
-func PublisherReply() {
+// PublisherWithReply ..
+func PublisherWithReply() {
 	nc, err := nats.Connect(natsURL)
 	if err != nil {
 		log.Fatal(err)
@@ -207,7 +207,7 @@ func PubSub() {
 // PubSubWithReply ..
 func PubSubWithReply() {
 	Subscriber()
-	PublisherReply()
+	PublisherWithReply()
 }
 
 // PubSubWithManualAck 一对多手动ack
@@ -215,9 +215,13 @@ func PubSubWithManualAck() {
 	SubscriberAck()
 	PubscriberAck()
 }
+
 func main() {
+	// 订阅者手动Ack数据 ack失败 消息重发
 	PubSubWithManualAck()
 
+	// 订阅增加消息回应
+	// PubSubWithReply()
 	// 创建一个channel，阻塞着
 	signalChan := make(chan int)
 	<-signalChan
