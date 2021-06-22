@@ -7,7 +7,7 @@ import (
 
 // User ..
 type User struct {
-	UserDB dao.PostgresDB
+	UserDB *dao.UserPgDB
 }
 
 // IsTelePhoneExist 检查手机号是否存在
@@ -17,6 +17,10 @@ func (a *User) IsTelePhoneExist(telephone string) bool {
 
 // Register 用户注册
 func (a *User) Register(user schema.User) error {
-	a.UserDB.Register(user)
-	return nil
+	return a.UserDB.Register(user)
 }
+
+// // QueryPage 查询分页数据
+// func (a *User) QueryPage(params schema.UserQueryParams) (schema.Users, error) {
+
+// }

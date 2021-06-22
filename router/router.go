@@ -13,8 +13,7 @@ import (
 // Init gin
 func Init() http.Handler {
 	e := gin.New()
-	u := api.User{BllUser: bll.User{UserDB: dao.PgDB}}
-
+	apis := initAPIs()
 	e.Use(middleware.Cors())
 
 	// e.Use()
@@ -23,9 +22,21 @@ func Init() http.Handler {
 	})
 	auth := e.Group("api/auth")
 	{
-		auth.POST("register", u.Register)
-		auth.POST("msg", u.NatsMessage)
+		auth.POST("register", apis.Register)
+		auth.POST("msg", apis.NatsMessage)
 	}
 
 	return e
+}
+
+// APIs apis
+type APIs struct {
+	api.User
+}
+
+func initAPIs() APIs {
+	return APIs{
+		api.User{BllUser: bll.User{UserDB: dao.GetUserDB()}},
+	}
+
 }
