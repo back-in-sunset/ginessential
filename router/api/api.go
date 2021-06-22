@@ -1,9 +1,10 @@
 package api
 
 import (
+	"gin-essential/bll"
 	"gin-essential/common/util"
-	"gin-essential/dao"
 	"gin-essential/model/entity"
+	"gin-essential/schema"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -11,7 +12,7 @@ import (
 
 // User 用户
 type User struct {
-	UserDB dao.PostgresDB
+	BllUser bll.User
 }
 
 // Register 注册
@@ -37,7 +38,7 @@ func (a *User) Register(c *gin.Context) {
 	}
 
 	// 判断手机号
-	if a.UserDB.IsTelePhoneExist(telephone) {
+	if a.BllUser.IsTelePhoneExist(telephone) {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"code": 422, "msg": "user has existed"})
 		return
 	}
@@ -48,13 +49,15 @@ func (a *User) Register(c *gin.Context) {
 		return
 	}
 	// 创建用户
-	newUser := entity.User{
-		Name:      name,
-		Telephone: telephone,
-		Password:  dkpassword,
+	newUser := schema.User{
+		UserEntity: entity.UserEntity{
+			Name:      name,
+			Password:  dkpassword,
+			Telephone: telephone,
+		},
 	}
 
-	err = a.UserDB.Register(newUser)
+	err = a.BllUser.Register(newUser)
 	if err != nil {
 		panic(err)
 	}

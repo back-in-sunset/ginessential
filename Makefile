@@ -2,8 +2,8 @@ include .env
 .PHONY:
 	start clean 
 
-start:
-	go run *.go
+start: clean build
+	./server
 
 build-linux:
 	GOOS=linux GOARCH=amd64 go build -o server -ldflags '-w -s'

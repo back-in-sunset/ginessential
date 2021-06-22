@@ -1,6 +1,9 @@
 package dao
 
-import "gin-essential/model/entity"
+import (
+	"gin-essential/model/entity"
+	"gin-essential/schema"
+)
 
 // IsTelePhoneExist 查询手机号是否存在
 func (a *PostgresDB) IsTelePhoneExist(telephone string) bool {
@@ -14,8 +17,10 @@ func (a *PostgresDB) IsTelePhoneExist(telephone string) bool {
 }
 
 // Register 注册
-func (a *PostgresDB) Register(newUser entity.User) error {
-	a.Create(&newUser)
+func (a *PostgresDB) Register(user schema.User) error {
+	a.Create(&entity.User{
+		UserEntity: user.UserEntity,
+	})
 	if err := a.Error; err != nil {
 		return err
 	}
