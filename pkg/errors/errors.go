@@ -1,6 +1,10 @@
 package errors
 
-import "github.com/pkg/errors"
+import (
+	"net/http"
+
+	"github.com/pkg/errors"
+)
 
 // 定义别名
 var (
@@ -14,7 +18,7 @@ var (
 
 // 定义错误
 var (
-	ErrBadRequest              = New400Response("请求发生错误")
+	ErrBadRequest              = New400Response("请求参数错误")
 	ErrInvalidParent           = New400Response("无效的父级节点")
 	ErrNotAllowDeleteWithChild = New400Response("含有子级，不能删除")
 	ErrNotAllowDelete          = New400Response("资源不允许删除")
@@ -22,6 +26,8 @@ var (
 	ErrInvalidPassword         = New400Response("无效的密码")
 	ErrInvalidUser             = New400Response("无效的用户")
 	ErrUserDisable             = New400Response("用户被禁用，请联系管理员")
+
+	ErrPhoneRegistered = NewResponse(422, http.StatusUnprocessableEntity, "用户已注册")
 
 	ErrNoPerm          = NewResponse(401, 401, "无访问权限")
 	ErrInvalidToken    = NewResponse(9999, 401, "令牌失效")

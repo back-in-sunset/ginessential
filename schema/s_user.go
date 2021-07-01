@@ -2,10 +2,8 @@ package schema
 
 import (
 	"gin-essential/model/entity"
+	"gin-essential/pkg/errors"
 	"gin-essential/pkg/util"
-	"net/http"
-
-	"github.com/gin-gonic/gin"
 )
 
 // User 用户
@@ -30,19 +28,17 @@ type UserQueryResult struct {
 }
 
 // Validate  数据验证
-func (a *User) Validate(c *gin.Context) bool {
+func (a *User) Validate() error {
 	if len(a.Telephone) != 11 {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"code": 422, "msg": "must be 11 numbers"})
-		return false
+		return errors.New400Response("手机号格式不对")
 	}
 
 	if len(a.Password) < 6 {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"code": 422, "msg": "must longer 6 numbers"})
-		return false
+		return errors.New400Response("密码少于6位")
 	}
 
 	if len(a.Name) == 0 {
 		a.Name = util.RandomString(10)
 	}
-	return true
+	return nil
 }

@@ -6,6 +6,7 @@ import (
 	"gin-essential/pkg/errors"
 	"gin-essential/schema"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
@@ -118,4 +119,15 @@ func GetBody(c *gin.Context) []byte {
 		}
 	}
 	return nil
+}
+
+// GetToken 获取token
+func GetToken(c *gin.Context) string {
+	var token string
+	token = c.GetHeader("Authorization")
+	prefix := "Bearer "
+	if strings.HasPrefix(token, prefix) {
+		token = token[len(prefix):]
+	}
+	return token
 }

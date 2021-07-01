@@ -3,11 +3,9 @@ package api
 import (
 	"gin-essential/bll"
 	"gin-essential/ginx"
-	"gin-essential/model/entity"
-	"gin-essential/pkg/util"
 	"gin-essential/schema"
-	"net/http"
 
+	"gin-essential/pkg/errors"
 	jwtauth "gin-essential/pkg/jwt"
 
 	"github.com/gin-gonic/gin"
@@ -24,48 +22,30 @@ type User struct {
 
 // Register 注册
 func (a *User) Register(c *gin.Context) {
-	// 获取参数
 	ctx := c.Request.Context()
-	name := c.PostForm("name")
-	telephone := c.PostForm("telephone")
-	password := c.PostForm("password")
-
-	// 数据验证
-	if len(telephone) != 11 {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"code": 422, "msg": "must be 11 numbers"})
+	// 获取参数
+	var params schema.User
+	ginx.ParseJSON(c, &params)
+	err := params.Validate()
+	if err != nil {
+		ginx.ResError(c, err)
 		return
-	}
-
-	if len(password) < 6 {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"code": 422, "msg": "must longer 6 numbers"})
-		return
-	}
-
-	if len(name) == 0 {
-		name = util.RandomString(10)
 	}
 
 	// 判断手机号
-	if a.UserBll.IsTelePhoneExist(ctx, telephone) {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"code": 422, "msg": "user has existed"})
+	if a.UserBll.IsTelePhoneExist(ctx, params.Telephone) {
+		ginx.ResError(c, errors.ErrPhoneRegistered)
 		return
 	}
 
-	dkpassword, err := jwtauth.Scrypt(password, jwtauth.Salt)
+	dkpassword, err := jwtauth.Scrypt(params.Password, jwtauth.Salt)
 	if err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"code": 422, "msg": "register failed place try it again"})
+		ginx.ResError(c, errors.New500Response("注册失败"))
 		return
 	}
 	// 创建用户
-	newUser := schema.User{
-		UserEntity: entity.UserEntity{
-			Name:      name,
-			Password:  dkpassword,
-			Telephone: telephone,
-		},
-	}
-
-	err = a.UserBll.Register(ctx, newUser)
+	params.Password = dkpassword
+	err = a.UserBll.Register(ctx, params)
 	if err != nil {
 		panic(err)
 	}
@@ -93,6 +73,7 @@ func (a *User) QueryStatistics(c *gin.Context) {
 	})
 }
 
+// QueryPage 查询分页
 func (a *User) QueryPage(c *gin.Context) {
 	ctx := c.Request.Context()
 	var params schema.UserQueryParams

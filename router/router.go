@@ -40,10 +40,12 @@ func (a *Router) Prefixes() []string {
 func (a *Router) RegisterAPI(app *gin.Engine) http.Handler {
 	app.Use(middleware.Cors())
 
+	// app.Group(strings.Join(a.Prefixes(app = ), ""))
 	// e.Use()
 	app.GET("heart_beat", func(c *gin.Context) {
 		c.JSON(200, gin.H{"msg": "ok"})
 	})
+
 	auth := app.Group("api/auth")
 	{
 		auth.POST("register", a.UserAPI.Register)
