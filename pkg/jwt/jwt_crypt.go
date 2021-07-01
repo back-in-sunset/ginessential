@@ -1,4 +1,4 @@
-package util
+package jwt
 
 import (
 	"fmt"
@@ -10,8 +10,8 @@ import (
 const Salt = `!@)(`
 
 // Scrypt 密码hash
-func Scrypt(password string) (string, error) {
-	dkpassword, err := scrypt.Key([]byte(password), []byte(Salt), 32768, 8, 1, 32)
+func Scrypt(password, salt string) (string, error) {
+	dkpassword, err := scrypt.Key([]byte(password), []byte(salt), 32768, 8, 1, 32)
 	if err != nil {
 		return "", err
 	}

@@ -1,26 +1,34 @@
 package dao
 
 import (
+	"context"
 	"gin-essential/model/entity"
 	"gin-essential/schema"
+	"log"
+
+	"github.com/google/wire"
+	"gorm.io/gorm"
 )
 
-// UserPgDB 用户DB
-type UserPgDB struct {
-	*PostgresDB
+// UserSet 注入User
+var UserSet = wire.NewSet(wire.Struct(new(User), "*"), wire.Struct(new(UserChDB), "*"))
+
+// User 用户DB
+type User struct {
+	PgDB *gorm.DB
 }
 
-// GetUserDB 获取UserDB
-func GetUserDB() *UserPgDB {
-	return &UserPgDB{
-		&PgDB,
-	}
+// UserChDB ..
+type UserChDB struct {
+	ChDB *ChDB
 }
 
 // IsTelePhoneExist 查询手机号是否存在
-func (a *UserPgDB) IsTelePhoneExist(telephone string) bool {
+func (a *User) IsTelePhoneExist(ctx context.Context, telephone string) bool {
 	var user entity.User
-	a.Where("telephone = ?", telephone).First(&user)
+
+	db := entity.GetUserDB(ctx, a.PgDB)
+	db.Where("telephone = ?", telephone).First(&user)
 	if user.ID != 0 {
 		return true
 	}
@@ -28,23 +36,26 @@ func (a *UserPgDB) IsTelePhoneExist(telephone string) bool {
 	return false
 }
 
-// Register 注册
-func (a *UserPgDB) Register(user schema.User) error {
-	a.Create(&entity.User{
+// Create 创建
+func (a *User) Create(ctx context.Context, user schema.User) error {
+	entity.GetUserDB(ctx, a.PgDB).Create(&entity.User{
 		UserEntity: user.UserEntity,
 	})
-	if err := a.Error; err != nil {
+	if err := a.PgDB.Error; err != nil {
 		return err
 	}
 	return nil
 }
 
 // Query 查询
-func (a UserPgDB) Query(params schema.UserQueryParams) (*schema.UserQueryResult, error) {
-	db := a.DB
+func (a *User) Query(ctx context.Context, params schema.UserQueryParams) (*schema.UserQueryResult, error) {
+	db := entity.GetUserDB(ctx, a.PgDB)
+
 	if v := params.UserName; v != "" {
 		db = db.Where("user_name like ?", "%"+v+"%")
 	}
+
+	db.Order("id DESC")
 	var result schema.Users
 	pr, err := WrapPageQuery(db, params.PaginationParam, &result)
 	if err != nil {
@@ -55,4 +66,54 @@ func (a UserPgDB) Query(params schema.UserQueryParams) (*schema.UserQueryResult,
 		Data:       result,
 	}, nil
 
+}
+
+// Get 获取单条数据
+func (a *User) Get(ctx context.Context, userID int) (*schema.User, error) {
+	db := entity.GetUserDB(ctx, a.PgDB)
+
+	var user schema.User
+	db.Where("user_id = ?", userID).First(&user)
+	if err := a.PgDB.Error; err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+// Update 更新
+func (a *User) Update(ctx context.Context, userID int, user schema.User) error {
+	db := entity.GetUserDB(ctx, a.PgDB)
+
+	db.Where("id = ?", userID).Updates(&user).Omit("id", "telephone", "email")
+	if err := a.PgDB.Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+// QueryStatistics 查询统计数据
+func (a *UserChDB) QueryStatistics(ctx context.Context) error {
+	db := entity.GetUserDB(ctx, (*gorm.DB)(a.ChDB))
+
+	var users schema.Users
+	db.Find(&users)
+	if err := db.Error; err != nil {
+		log.Println(err)
+	}
+	log.Printf("%+v", users)
+	return nil
+}
+
+// BatchCreate ..
+func (a *UserChDB) BatchCreate(ctx context.Context, users schema.Users) error {
+	// db := entity.GetUserDB(ctx, (*gorm.DB)(a.ChDB))
+
+	// log.Printf("%+v", users[0])
+	// db.Create(*users[0])
+
+	// if err := db.Error; err != nil {
+	// 	log.Println(err)
+	// 	return err
+	// }
+	return nil
 }

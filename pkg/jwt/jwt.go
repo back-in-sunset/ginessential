@@ -1,4 +1,4 @@
-package util
+package jwt
 
 import (
 	"errors"
@@ -7,25 +7,23 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-const (
-	jwtSecretDefault = `key`
-)
+var jwtSecretDefault = []byte(`key`)
 
 // Claims jwt-claims
 type Claims struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+	UserName string `json:"user_name"`
+	UserID   string `json:"user_id"`
 	jwt.StandardClaims
 }
 
 // GenToken 生成token
-func GenToken(username, password string) (string, error) {
+func GenToken(userName string, userID string) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(24 * time.Hour)
 
 	claims := Claims{
-		Username: username,
-		Password: password,
+		UserName: userName,
+		UserID:   userID,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expireTime.Unix(),
 			Issuer:    "gin",
@@ -53,4 +51,9 @@ func ParseToken(token string) (*Claims, error) {
 		return nil, errors.New("tokenClaims.Claims is error")
 	}
 	return claims, nil
+}
+
+// FreshToken 刷新token
+func FreshToken() {
+
 }

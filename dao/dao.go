@@ -5,9 +5,9 @@ import (
 	"gin-essential/schema"
 	"log"
 	"os"
-	"sync"
 	"time"
 
+	"github.com/google/wire"
 	"gorm.io/driver/clickhouse"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -15,72 +15,64 @@ import (
 
 const (
 	pgdsn = "host=localhost user=postgres password=e.0369 dbname=postgres port=5432 sslmode=disable TimeZone=Asia/Shanghai"
-	chdsn = "tcp://localhost:9000?database=gorm&username=gorm&password=gorm&read_timeout=10&write_timeout=20"
+	chdsn = "tcp://localhost:9001?database=gorm&read_timeout=10&write_timeout=20"
 )
 
-// PostgresDB  PostgresDB
-type PostgresDB struct {
-	*gorm.DB
-}
-
-// ClickHouseDB clickhouse DB
-type ClickHouseDB struct {
-	*gorm.DB
-}
-
-// PgDB 实例化
-var (
-	PgDB PostgresDB
-	ChDB ClickHouseDB
+// ModelSet model注入
+var ModelSet = wire.NewSet(
+	UserSet,
 )
 
-// InitDB mysql 初始化
-func InitDB() {
-	var once sync.Once
+// InitPgDB postgreSQL 初始化
+func InitPgDB() *gorm.DB {
+	// PostgresSQL 初始化
+	pgDB, err := gorm.Open(postgres.Open(pgdsn), &gorm.Config{})
+	if err != nil {
+		panic(err)
+	}
 
-	once.Do(
-		func() {
-			// PostgresSQL 初始化
-			pgDB, err := gorm.Open(postgres.Open(pgdsn), &gorm.Config{})
-			if err != nil {
-				panic(err)
-			}
+	sqlDB, _ := pgDB.DB()
+	// SetMaxIdleConns 设置空闲连接池中连接的最大数量
+	sqlDB.SetMaxIdleConns(10)
+	// SetMaxOpenConns 设置打开数据库连接的最大数量。
+	sqlDB.SetMaxOpenConns(100)
+	// SetConnMaxLifetime 设置了连接可复用的最大时间。
+	sqlDB.SetConnMaxLifetime(time.Hour)
+	pgDB.AutoMigrate(entity.User{})
+	if os.Getenv("GOENV") == "dev" {
+		log.Println("[INFO]> DB Starting.... IN Debug Mode ")
+		pgDB.Debug()
+	}
 
-			sqlDB, _ := pgDB.DB()
-			// SetMaxIdleConns 设置空闲连接池中连接的最大数量
-			sqlDB.SetMaxIdleConns(10)
-			// SetMaxOpenConns 设置打开数据库连接的最大数量。
-			sqlDB.SetMaxOpenConns(100)
-			// SetConnMaxLifetime 设置了连接可复用的最大时间。
-			sqlDB.SetConnMaxLifetime(time.Hour)
-			pgDB.AutoMigrate(entity.User{})
-			if os.Getenv("GOENV") == "dev" {
-				log.Println("[INFO]> DB Starting.... IN Debug Mode ")
-				pgDB.Debug()
-			}
-			PgDB.DB = pgDB
+	return pgDB
+}
 
-			// ClickHouse 初始化
-			chDB, err := gorm.Open(clickhouse.Open(chdsn), &gorm.Config{})
-			if err != nil {
-				panic(err)
-			}
+// ChDB ..
+type ChDB gorm.DB
 
-			sqlDB, _ = chDB.DB()
-			// SetMaxIdleConns 设置空闲连接池中连接的最大数量
-			sqlDB.SetMaxIdleConns(10)
-			// SetMaxOpenConns 设置打开数据库连接的最大数量。
-			sqlDB.SetMaxOpenConns(100)
-			// SetConnMaxLifetime 设置了连接可复用的最大时间。
-			sqlDB.SetConnMaxLifetime(time.Hour)
-			if os.Getenv("GOENV") == "dev" {
-				log.Println("[INFO]> DB Starting.... IN Debug Mode ")
-				chDB.Debug()
-			}
-			ChDB.DB = chDB
-		},
-	)
+// InitChDB clickhouse 初始化
+func InitChDB() *ChDB {
+	// ClickHouse 初始化
+	chDB, err := gorm.Open(clickhouse.Open(chdsn), &gorm.Config{})
+	if err != nil {
+		panic(err)
+	}
 
+	sqlDB, _ := chDB.DB()
+	// SetMaxIdleConns 设置空闲连接池中连接的最大数量
+	sqlDB.SetMaxIdleConns(10)
+	// SetMaxOpenConns 设置打开数据库连接的最大数量。
+	sqlDB.SetMaxOpenConns(100)
+	// SetConnMaxLifetime 设置了连接可复用的最大时间。
+	sqlDB.SetConnMaxLifetime(time.Hour)
+
+	chDB.AutoMigrate(entity.User{})
+	if os.Getenv("GOENV") == "dev" {
+		log.Println("[INFO]> DB Starting.... IN Debug Mode ")
+		chDB.Debug()
+	}
+
+	return (*ChDB)(chDB)
 }
 
 // WrapPageQuery 包装成带有分页的查询

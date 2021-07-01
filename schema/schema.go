@@ -1,5 +1,35 @@
 package schema
 
+// StatusText 定义状态文本
+type StatusText string
+
+func (t StatusText) String() string {
+	return string(t)
+}
+
+// 定义HTTP状态文本常量
+const (
+	OKStatus    StatusText = "OK"
+	ErrorStatus StatusText = "ERROR"
+	FailStatus  StatusText = "FAIL"
+)
+
+// StatusResult 状态结果
+type StatusResult struct {
+	Status StatusText
+}
+
+// ErrorResult 响应错误
+type ErrorResult struct {
+	Error ErrorItem `json:"error"` // 错误项
+}
+
+// ErrorItem 响应错误项
+type ErrorItem struct {
+	Code    int    `json:"code"`    // 错误码
+	Message string `json:"message"` // 错误信息
+}
+
 // PaginationParam 分页查询条件
 type PaginationParam struct {
 	Pagination bool `form:"-"`                                     // 是否使用分页查询
@@ -13,4 +43,10 @@ type PaginationResult struct {
 	Total    int  `json:"total"`
 	Current  uint `json:"current"`
 	PageSize uint `json:"pageSize"`
+}
+
+// ListResult 响应列表数据
+type ListResult struct {
+	List       interface{}       `json:"list"`
+	Pagination *PaginationResult `json:"pagination,omitempty"`
 }
