@@ -50,7 +50,10 @@ func (a *Router) RegisterAPI(app *gin.Engine) http.Handler {
 	{
 		auth.POST("register", a.UserAPI.Register)
 		auth.POST("msg", a.UserAPI.NatsMessage)
-		auth.GET("click", a.UserAPI.QueryStatistics)
+	}
+	users := app.Group("api/users")
+	{
+		users.GET("query", a.UserAPI.QueryPage)
 	}
 
 	return app

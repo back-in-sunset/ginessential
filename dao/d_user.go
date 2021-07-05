@@ -4,24 +4,23 @@ import (
 	"context"
 	"gin-essential/model/entity"
 	"gin-essential/schema"
-	"log"
 
 	"github.com/google/wire"
 	"gorm.io/gorm"
 )
 
 // UserSet 注入User
-var UserSet = wire.NewSet(wire.Struct(new(User), "*"), wire.Struct(new(UserChDB), "*"))
+var UserSet = wire.NewSet(wire.Struct(new(User), "*"))
 
 // User 用户DB
 type User struct {
 	PgDB *gorm.DB
 }
 
-// UserChDB ..
-type UserChDB struct {
-	ChDB *ChDB
-}
+// // UserChDB ..
+// type UserChDB struct {
+// 	ChDB *ChDB
+// }
 
 // IsTelePhoneExist 查询手机号是否存在
 func (a *User) IsTelePhoneExist(ctx context.Context, telephone string) bool {
@@ -91,29 +90,29 @@ func (a *User) Update(ctx context.Context, userID int, user schema.User) error {
 	return nil
 }
 
-// QueryStatistics 查询统计数据
-func (a *UserChDB) QueryStatistics(ctx context.Context) error {
-	db := entity.GetUserDB(ctx, (*gorm.DB)(a.ChDB))
+// // QueryStatistics 查询统计数据
+// func (a *UserChDB) QueryStatistics(ctx context.Context) error {
+// 	db := entity.GetUserDB(ctx, (*gorm.DB)(a.ChDB))
 
-	var users schema.Users
-	db.Find(&users)
-	if err := db.Error; err != nil {
-		log.Println(err)
-	}
-	log.Printf("%+v", users)
-	return nil
-}
+// 	var users schema.Users
+// 	db.Find(&users)
+// 	if err := db.Error; err != nil {
+// 		log.Println(err)
+// 	}
+// 	log.Printf("%+v", users)
+// 	return nil
+// }
 
-// BatchCreate ..
-func (a *UserChDB) BatchCreate(ctx context.Context, users schema.Users) error {
-	// db := entity.GetUserDB(ctx, (*gorm.DB)(a.ChDB))
+// // BatchCreate ..
+// func (a *UserChDB) BatchCreate(ctx context.Context, users schema.Users) error {
+// 	// db := entity.GetUserDB(ctx, (*gorm.DB)(a.ChDB))
 
-	// log.Printf("%+v", users[0])
-	// db.Create(*users[0])
+// 	// log.Printf("%+v", users[0])
+// 	// db.Create(*users[0])
 
-	// if err := db.Error; err != nil {
-	// 	log.Println(err)
-	// 	return err
-	// }
-	return nil
-}
+// 	// if err := db.Error; err != nil {
+// 	// 	log.Println(err)
+// 	// 	return err
+// 	// }
+// 	return nil
+// }

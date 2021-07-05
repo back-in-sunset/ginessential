@@ -47,11 +47,8 @@ func InitPgDB() *gorm.DB {
 	return pgDB
 }
 
-// ChDB ..
-type ChDB gorm.DB
-
 // InitChDB clickhouse 初始化
-func InitChDB() *ChDB {
+func InitChDB() *gorm.DB {
 	// ClickHouse 初始化
 	chDB, err := gorm.Open(clickhouse.Open(chdsn), &gorm.Config{})
 	if err != nil {
@@ -66,13 +63,13 @@ func InitChDB() *ChDB {
 	// SetConnMaxLifetime 设置了连接可复用的最大时间。
 	sqlDB.SetConnMaxLifetime(time.Hour)
 
-	chDB.AutoMigrate(entity.User{})
+	// chDB.AutoMigrate(entity.User{})
 	if os.Getenv("GOENV") == "dev" {
 		log.Println("[INFO]> DB Starting.... IN Debug Mode ")
 		chDB.Debug()
 	}
 
-	return (*ChDB)(chDB)
+	return chDB
 }
 
 // WrapPageQuery 包装成带有分页的查询

@@ -61,17 +61,17 @@ func (a *User) NatsMessage(c *gin.Context) {
 
 }
 
-// QueryStatistics ..
-func (a *User) QueryStatistics(c *gin.Context) {
-	ctx := c.Request.Context()
-	err := a.UserBll.QueryStatistics(ctx)
-	if err != nil {
-		panic(err)
-	}
-	c.JSON(200, gin.H{
-		"msg": "query clickhouse",
-	})
-}
+// // QueryStatistics ..
+// func (a *User) QueryStatistics(c *gin.Context) {
+// 	ctx := c.Request.Context()
+// 	err := a.UserBll.QueryStatistics(ctx)
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	c.JSON(200, gin.H{
+// 		"msg": "query clickhouse",
+// 	})
+// }
 
 // QueryPage 查询分页
 func (a *User) QueryPage(c *gin.Context) {
@@ -83,5 +83,10 @@ func (a *User) QueryPage(c *gin.Context) {
 	}
 
 	params.Pagination = true
-	a.UserBll.QueryPage(ctx, params)
+	userResult, err := a.UserBll.QueryPage(ctx, params)
+	if err != nil {
+		ginx.ResError(c, err)
+		return
+	}
+	ginx.ResPage(c, userResult.Data, userResult.PageResult)
 }

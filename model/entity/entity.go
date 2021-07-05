@@ -2,7 +2,7 @@ package entity
 
 import (
 	"context"
-	"gin-essential/contextx"
+	contextx "gin-essential/ctx"
 
 	"gorm.io/gorm"
 )

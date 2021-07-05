@@ -9,6 +9,7 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/wire v0.5.0
 	github.com/jackc/pgproto3/v2 v2.0.7 // indirect
+	github.com/jmoiron/sqlx v1.3.4 // indirect
 	github.com/json-iterator/go v1.1.11 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/nats-io/nats-streaming-server v0.22.0 // indirect

@@ -20,13 +20,8 @@ func BuildInjector() (*Injector, func(), error) {
 	user := &dao.User{
 		PgDB: db,
 	}
-	chDB := dao.InitChDB()
-	userChDB := &dao.UserChDB{
-		ChDB: chDB,
-	}
 	bllUser := bll.User{
-		UserDB:   user,
-		UserChDB: userChDB,
+		UserDB: user,
 	}
 	apiUser := &api.User{
 		UserBll: bllUser,

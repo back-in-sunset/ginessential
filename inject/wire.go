@@ -4,7 +4,7 @@ package inject
 // func BuildInjector() (*Injector, func(), error) {
 // 	wire.Build(
 // 		dao.InitPgDB,
-// 		dao.InitChDB,
+// 		// dao.InitChDB,
 // 		dao.ModelSet,
 // 		router.RouterSet,
 // 		router.InitGinEngine,
