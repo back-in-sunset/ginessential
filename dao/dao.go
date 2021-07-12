@@ -33,12 +33,12 @@ func InitPgDB() *gorm.DB {
 
 	sqlDB, _ := pgDB.DB()
 	// SetMaxIdleConns 设置空闲连接池中连接的最大数量
-	sqlDB.SetMaxIdleConns(10)
+	sqlDB.SetMaxIdleConns(300)
 	// SetMaxOpenConns 设置打开数据库连接的最大数量。
-	sqlDB.SetMaxOpenConns(100)
+	sqlDB.SetMaxOpenConns(400)
 	// SetConnMaxLifetime 设置了连接可复用的最大时间。
 	sqlDB.SetConnMaxLifetime(time.Hour)
-	pgDB.AutoMigrate(entity.User{})
+	pgDB.AutoMigrate(entity.User{}, entity.TTSTone{})
 	if os.Getenv("GOENV") == "dev" {
 		log.Println("[INFO]> DB Starting.... IN Debug Mode ")
 		pgDB.Debug()

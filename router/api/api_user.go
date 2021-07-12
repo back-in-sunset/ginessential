@@ -55,10 +55,7 @@ func (a *User) Register(c *gin.Context) {
 
 // NatsMessage ..
 func (a *User) NatsMessage(c *gin.Context) {
-	c.JSON(200, gin.H{
-		"msg": "注册成功",
-	})
-
+	ginx.ResError(c, errors.New400Response("注册失败"))
 }
 
 // // QueryStatistics ..
@@ -75,7 +72,6 @@ func (a *User) NatsMessage(c *gin.Context) {
 
 // QueryPage 查询分页
 func (a *User) QueryPage(c *gin.Context) {
-	ctx := c.Request.Context()
 	var params schema.UserQueryParams
 	if err := ginx.ParseQuery(c, &params); err != nil {
 		ginx.ResError(c, err)
@@ -83,7 +79,7 @@ func (a *User) QueryPage(c *gin.Context) {
 	}
 
 	params.Pagination = true
-	userResult, err := a.UserBll.QueryPage(ctx, params)
+	userResult, err := a.UserBll.QueryPage(c.Request.Context(), params)
 	if err != nil {
 		ginx.ResError(c, err)
 		return

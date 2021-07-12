@@ -49,7 +49,7 @@ func (a *Router) RegisterAPI(app *gin.Engine) http.Handler {
 	auth := app.Group("api/auth")
 	{
 		auth.POST("register", a.UserAPI.Register)
-		auth.POST("msg", a.UserAPI.NatsMessage)
+		auth.GET("msg", a.UserAPI.NatsMessage)
 	}
 	users := app.Group("api/users")
 	{
