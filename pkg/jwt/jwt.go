@@ -55,5 +55,9 @@ func ParseToken(token string) (*Claims, error) {
 
 // FreshToken 刷新token
 func FreshToken() {
+}
+
+// DeleteToken 删除token
+func DeleteToken() {
 
 }

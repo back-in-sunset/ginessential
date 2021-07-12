@@ -21,13 +21,14 @@ type StatusResult struct {
 
 // ErrorResult 响应错误
 type ErrorResult struct {
-	Error ErrorItem `json:"error"` // 错误项
+	ErrorItem // 错误项
 }
 
 // ErrorItem 响应错误项
 type ErrorItem struct {
-	Code    int    `json:"code"`    // 错误码
-	Message string `json:"message"` // 错误信息
+	Status  StatusText `json:"staus"`
+	Code    int        `json:"code"`    // 错误码
+	Message string     `json:"message"` // 错误信息
 }
 
 // PaginationParam 分页查询条件
@@ -49,4 +50,10 @@ type PaginationResult struct {
 type ListResult struct {
 	List       interface{}       `json:"list"`
 	Pagination *PaginationResult `json:"pagination,omitempty"`
+}
+
+// SuccessResult 成功结果
+type SuccessResult struct {
+	Status StatusText  `json:"status"`
+	Data   interface{} `json:"data"` // 返回数据
 }

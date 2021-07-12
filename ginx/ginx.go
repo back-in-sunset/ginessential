@@ -45,7 +45,12 @@ func ParseForm(c *gin.Context, obj interface{}) error {
 
 // ResOK 响应OK
 func ResOK(c *gin.Context) {
-	ResSuccess(c, schema.StatusResult{Status: schema.OKStatus})
+	// ResSuccess(c, schema.StatusResult{Status: schema.OKStatus})
+	ResSuccess(c, schema.SuccessResult{
+		Status: schema.OKStatus,
+		Data:   schema.StatusResult{Status: schema.OKStatus},
+	})
+
 }
 
 // ResList 响应列表数据
@@ -55,16 +60,19 @@ func ResList(c *gin.Context, v interface{}) {
 
 // ResPage 响应分页数据
 func ResPage(c *gin.Context, v interface{}, pr *schema.PaginationResult) {
-	list := schema.ListResult{
-		List:       v,
-		Pagination: pr,
-	}
-	ResSuccess(c, list)
+
+	ResSuccess(c, schema.SuccessResult{
+		Status: schema.OKStatus,
+		Data: schema.ListResult{
+			List:       v,
+			Pagination: pr,
+		},
+	})
 }
 
 // ResSuccess 响应成功
 func ResSuccess(c *gin.Context, v interface{}) {
-	ResJSON(c, http.StatusOK, v)
+	resJSON(c, http.StatusOK, v)
 }
 
 // ResError 响应错误
@@ -94,14 +102,15 @@ func ResError(c *gin.Context, err error, status ...int) {
 	}
 
 	eitem := schema.ErrorItem{
+		Status:  schema.ErrorStatus,
 		Code:    res.Code,
 		Message: res.Message,
 	}
-	ResJSON(c, res.StatusCode, schema.ErrorResult{Error: eitem})
+	resJSON(c, res.StatusCode, schema.ErrorResult{ErrorItem: eitem})
 }
 
-// ResJSON 响应JSON数据
-func ResJSON(c *gin.Context, status int, v interface{}) {
+// resJSON 响应JSON数据
+func resJSON(c *gin.Context, status int, v interface{}) {
 	buf, err := json.Marshal(v)
 	if err != nil {
 		panic(err)
