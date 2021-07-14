@@ -3,7 +3,7 @@ include .env
 	start clean 
 
 start: 
-	@go run *.go 
+	@swag init & go run *.go 
 
 start-linux:build-linux
 	./server > out.log 2>&1 
@@ -13,6 +13,9 @@ build-linux:
 
 build:
 	go build -o server -ldflags '-w -s'
+
+swag:
+	swag init --parseDependency --generalInfo ./main.go
 
 clean:
 	@rm server 2>&1 | true

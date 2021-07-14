@@ -7,6 +7,12 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
+
+	// swagger
+	_ "gin-essential/docs"
+
+	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/swaggo/gin-swagger/swaggerFiles"
 )
 
 // RouterSet 注入router
@@ -39,7 +45,6 @@ func (a *Router) Prefixes() []string {
 // RegisterAPI 注册API
 func (a *Router) RegisterAPI(app *gin.Engine) http.Handler {
 	app.Use(middleware.Cors())
-
 	// app.Group(strings.Join(a.Prefixes(app = ), ""))
 	// e.Use()
 	app.GET("heart_beat", func(c *gin.Context) {
@@ -53,11 +58,26 @@ func (a *Router) RegisterAPI(app *gin.Engine) http.Handler {
 	}
 	users := app.Group("api/users")
 	{
-		users.GET("query", a.UserAPI.QueryPage)
+		users.GET("", a.UserAPI.Query)
 	}
 
 	return app
 }
+
+// @title Swagger Example API
+// @version 1.0
+// @description This is a sample server Petstore server.
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host petstore.swagger.io
+// @BasePath /v2
 
 // InitGinEngine 初始化gin引擎
 func InitGinEngine(r IRouter) *gin.Engine {
@@ -67,6 +87,8 @@ func InitGinEngine(r IRouter) *gin.Engine {
 
 	// Router register
 	r.Register(app)
+
+	app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	return app
 }

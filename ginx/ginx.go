@@ -60,7 +60,6 @@ func ResList(c *gin.Context, v interface{}) {
 
 // ResPage 响应分页数据
 func ResPage(c *gin.Context, v interface{}, pr *schema.PaginationResult) {
-
 	ResSuccess(c, schema.SuccessResult{
 		Status: schema.OKStatus,
 		Data: schema.ListResult{

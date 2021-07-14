@@ -51,7 +51,7 @@ func (a *User) Query(ctx context.Context, params schema.UserQueryParams) (*schem
 	db := entity.GetUserDB(ctx, a.PgDB)
 
 	if v := params.UserName; v != "" {
-		db = db.Where("user_name like ?", "%"+v+"%")
+		db = db.Where("name like ?", "%"+v+"%")
 	}
 
 	db.Order("id DESC")
@@ -61,8 +61,8 @@ func (a *User) Query(ctx context.Context, params schema.UserQueryParams) (*schem
 		return &schema.UserQueryResult{}, err
 	}
 	return &schema.UserQueryResult{
-		PageResult: pr,
-		Data:       result,
+		Pagination: pr,
+		List:       result,
 	}, nil
 
 }

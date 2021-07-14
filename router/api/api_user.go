@@ -58,20 +58,20 @@ func (a *User) NatsMessage(c *gin.Context) {
 	ginx.ResError(c, errors.New400Response("注册失败"))
 }
 
-// // QueryStatistics ..
-// func (a *User) QueryStatistics(c *gin.Context) {
-// 	ctx := c.Request.Context()
-// 	err := a.UserBll.QueryStatistics(ctx)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	c.JSON(200, gin.H{
-// 		"msg": "query clickhouse",
-// 	})
-// }
-
-// QueryPage 查询分页
-func (a *User) QueryPage(c *gin.Context) {
+// Query 查询数据
+// @Tags Users
+// @Summary 查询数据
+// @Description 查询数据
+// @Accept json
+// @Produce json
+// @Param current query int true "分页索引" default(1)
+// @Param page_size query int true "分页大小" default(10)
+// @Param user_name query string false "用户名称"
+// @Success 200 {object} schema.UserQueryResult "{staus:"OK", data:响应数据}"
+// @Failure 400 {object} schema.ErrorItem "{code:400, status:"OK", message:"请求参数错误"}"
+// @Failure 404 {object} schema.ErrorItem "{code:404, status:"OK", message:"路由错误"}"
+// @Router /api/users [get]
+func (a *User) Query(c *gin.Context) {
 	var params schema.UserQueryParams
 	if err := ginx.ParseQuery(c, &params); err != nil {
 		ginx.ResError(c, err)
@@ -84,5 +84,5 @@ func (a *User) QueryPage(c *gin.Context) {
 		ginx.ResError(c, err)
 		return
 	}
-	ginx.ResPage(c, userResult.Data, userResult.PageResult)
+	ginx.ResPage(c, userResult.List, userResult.Pagination)
 }

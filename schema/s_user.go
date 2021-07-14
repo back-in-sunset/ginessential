@@ -29,8 +29,8 @@ type UserQueryParams struct {
 
 // UserQueryResult 用户查询结果
 type UserQueryResult struct {
-	Data       Users
-	PageResult *PaginationResult
+	List       Users
+	Pagination *PaginationResult
 }
 
 // Validate  数据验证
