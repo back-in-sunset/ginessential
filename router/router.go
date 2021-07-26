@@ -53,12 +53,16 @@ func (a *Router) RegisterAPI(app *gin.Engine) http.Handler {
 
 	auth := app.Group("api/auth")
 	{
-		auth.POST("register", a.UserAPI.Register)
 		auth.GET("msg", a.UserAPI.NatsMessage)
 	}
 	users := app.Group("api/users")
 	{
 		users.GET("", a.UserAPI.Query)
+		users.POST("", a.UserAPI.Register)
+		users.GET(":id", a.UserAPI.Get)
+		// users.GET("/:id/container/:tid", a.UserAPI.Get)
+		users.GET(":id/start", a.UserAPI.Start)
+
 	}
 
 	return app
@@ -69,8 +73,8 @@ func (a *Router) RegisterAPI(app *gin.Engine) http.Handler {
 // @description This is a sample server Petstore server.
 // @termsOfService http://swagger.io/terms/
 
-// @contact.name API Support
-// @contact.url http://www.swagger.io/support
+// @contact.name Jerry
+// @contact.url http://www.swagger.io/supports
 // @contact.email support@swagger.io
 
 // @license.name Apache 2.0

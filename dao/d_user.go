@@ -17,30 +17,12 @@ type User struct {
 	PgDB *gorm.DB
 }
 
-// // UserChDB ..
-// type UserChDB struct {
-// 	ChDB *ChDB
-// }
-
-// IsTelePhoneExist 查询手机号是否存在
-func (a *User) IsTelePhoneExist(ctx context.Context, telephone string) bool {
-	var user entity.User
-
-	db := entity.GetUserDB(ctx, a.PgDB)
-	db.Where("telephone = ?", telephone).First(&user)
-	if user.ID != 0 {
-		return true
-	}
-
-	return false
-}
-
 // Create 创建
 func (a *User) Create(ctx context.Context, user schema.User) error {
-	entity.GetUserDB(ctx, a.PgDB).Create(&entity.User{
+	db := entity.GetUserDB(ctx, a.PgDB).Create(&entity.User{
 		UserEntity: user.UserEntity,
 	})
-	if err := a.PgDB.Error; err != nil {
+	if err := db.Error; err != nil {
 		return err
 	}
 	return nil
@@ -52,6 +34,9 @@ func (a *User) Query(ctx context.Context, params schema.UserQueryParams) (*schem
 
 	if v := params.UserName; v != "" {
 		db = db.Where("name like ?", "%"+v+"%")
+	}
+	if v := params.Telephone; v != "" {
+		db = db.Where("telephone = ?", v)
 	}
 
 	db.Order("id DESC")
@@ -69,13 +54,16 @@ func (a *User) Query(ctx context.Context, params schema.UserQueryParams) (*schem
 
 // Get 获取单条数据
 func (a *User) Get(ctx context.Context, userID int) (*schema.User, error) {
-	db := entity.GetUserDB(ctx, a.PgDB)
+	db := entity.GetUserDB(ctx, a.PgDB).Where("id = ?", userID)
 
 	var user schema.User
-	db.Where("user_id = ?", userID).First(&user)
-	if err := a.PgDB.Error; err != nil {
+	ok, err := FindOne(ctx, db, &user)
+	if err != nil {
 		return nil, err
+	} else if !ok {
+		return nil, nil
 	}
+
 	return &user, nil
 }
 
@@ -84,35 +72,17 @@ func (a *User) Update(ctx context.Context, userID int, user schema.User) error {
 	db := entity.GetUserDB(ctx, a.PgDB)
 
 	db.Where("id = ?", userID).Updates(&user).Omit("id", "telephone", "email")
-	if err := a.PgDB.Error; err != nil {
+	if err := db.Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-// // QueryStatistics 查询统计数据
-// func (a *UserChDB) QueryStatistics(ctx context.Context) error {
-// 	db := entity.GetUserDB(ctx, (*gorm.DB)(a.ChDB))
-
-// 	var users schema.Users
-// 	db.Find(&users)
-// 	if err := db.Error; err != nil {
-// 		log.Println(err)
-// 	}
-// 	log.Printf("%+v", users)
-// 	return nil
-// }
-
-// // BatchCreate ..
-// func (a *UserChDB) BatchCreate(ctx context.Context, users schema.Users) error {
-// 	// db := entity.GetUserDB(ctx, (*gorm.DB)(a.ChDB))
-
-// 	// log.Printf("%+v", users[0])
-// 	// db.Create(*users[0])
-
-// 	// if err := db.Error; err != nil {
-// 	// 	log.Println(err)
-// 	// 	return err
-// 	// }
-// 	return nil
-// }
+// Delete 删除
+func (a *User) Delete(ctx context.Context, userID int) error {
+	db := entity.GetUserDB(ctx, a.PgDB).Where("id = ?", userID).Delete(entity.User{})
+	if err := db.Error; err != nil {
+		return err
+	}
+	return nil
+}

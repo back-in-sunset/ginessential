@@ -14,7 +14,7 @@ type TTSTone struct {
 
 // GetTTSToneDB 获取tts tone存储
 func GetTTSToneDB(ctx context.Context, defDB *gorm.DB) *gorm.DB {
-	return getDBWithModel(ctx, defDB, new(TTSTone))
+	return getDBWithTable(ctx, defDB, new(TTSTone))
 }
 
 // TTSToneEntity ..

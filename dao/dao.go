@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"context"
 	"gin-essential/model/entity"
 	"gin-essential/schema"
 	"log"
@@ -18,11 +19,6 @@ const (
 	chdsn = "tcp://localhost:9001?database=gorm&read_timeout=10&write_timeout=20"
 )
 
-// ModelSet model注入
-var ModelSet = wire.NewSet(
-	UserSet,
-)
-
 // InitPgDB postgreSQL 初始化
 func InitPgDB() *gorm.DB {
 	// PostgresSQL 初始化
@@ -33,9 +29,9 @@ func InitPgDB() *gorm.DB {
 
 	sqlDB, _ := pgDB.DB()
 	// SetMaxIdleConns 设置空闲连接池中连接的最大数量
-	sqlDB.SetMaxIdleConns(300)
+	sqlDB.SetMaxIdleConns(80)
 	// SetMaxOpenConns 设置打开数据库连接的最大数量。
-	sqlDB.SetMaxOpenConns(400)
+	sqlDB.SetMaxOpenConns(100)
 	// SetConnMaxLifetime 设置了连接可复用的最大时间。
 	sqlDB.SetConnMaxLifetime(time.Hour)
 	pgDB.AutoMigrate(entity.User{}, entity.TTSTone{})
@@ -59,7 +55,7 @@ func InitChDB() *gorm.DB {
 	// SetMaxIdleConns 设置空闲连接池中连接的最大数量
 	sqlDB.SetMaxIdleConns(10)
 	// SetMaxOpenConns 设置打开数据库连接的最大数量。
-	sqlDB.SetMaxOpenConns(100)
+	sqlDB.SetMaxOpenConns(80)
 	// SetConnMaxLifetime 设置了连接可复用的最大时间。
 	sqlDB.SetConnMaxLifetime(time.Hour)
 
@@ -114,3 +110,20 @@ func findPage(db *gorm.DB, pp schema.PaginationParam, out interface{}) (int, err
 	err = db.Find(out).Error
 	return int(count), err
 }
+
+// FindOne 查询单条数据
+func FindOne(ctx context.Context, db *gorm.DB, out interface{}) (bool, error) {
+	db.First(out)
+	if db.Error != nil {
+		if db.Error == gorm.ErrRecordNotFound {
+			return false, nil
+		}
+		return false, db.Error
+	}
+	return true, nil
+}
+
+// ModelSet model注入
+var ModelSet = wire.NewSet(
+	UserSet,
+)

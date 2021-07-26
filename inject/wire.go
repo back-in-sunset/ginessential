@@ -1,6 +1,6 @@
 package inject
 
-// // BuildInjector ..
+// BuildInjector ..
 // func BuildInjector() (*Injector, func(), error) {
 // 	wire.Build(
 // 		dao.InitPgDB,

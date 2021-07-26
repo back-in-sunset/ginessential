@@ -34,7 +34,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Users"
+                    "Users 用户"
                 ],
                 "summary": "查询数据",
                 "parameters": [
@@ -75,7 +75,95 @@ var doc = `{
                         }
                     },
                     "404": {
-                        "description": "{code:404, status:\"OK\", message:\"路由错误\"}",
+                        "description": "{code:404, status:\"OK\", message:\"资源不存在\"}",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorItem"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/{id}": {
+            "get": {
+                "description": "查询数据",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users 用户"
+                ],
+                "summary": "查询数据",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "用户ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{staus:\"OK\", data:响应数据}",
+                        "schema": {
+                            "$ref": "#/definitions/schema.UserQueryResult"
+                        }
+                    },
+                    "400": {
+                        "description": "{code:400, status:\"OK\", message:\"请求参数错误\"}",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorItem"
+                        }
+                    },
+                    "404": {
+                        "description": "{code:404, status:\"OK\", message:\"资源不存在\"}",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorItem"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/{id}/start": {
+            "get": {
+                "description": "查询数据",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users 用户"
+                ],
+                "summary": "查询数据",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "用户ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{staus:\"OK\", data:响应数据}",
+                        "schema": {
+                            "$ref": "#/definitions/schema.UserQueryResult"
+                        }
+                    },
+                    "400": {
+                        "description": "{code:400, status:\"OK\", message:\"请求参数错误\"}",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorItem"
+                        }
+                    },
+                    "404": {
+                        "description": "{code:404, status:\"OK\", message:\"资源不存在\"}",
                         "schema": {
                             "$ref": "#/definitions/schema.ErrorItem"
                         }
@@ -123,9 +211,11 @@ var doc = `{
                     "type": "string"
                 },
                 "name": {
+                    "description": "用户名",
                     "type": "string"
                 },
                 "password": {
+                    "description": "密码",
                     "type": "string"
                 },
                 "status": {
@@ -133,6 +223,7 @@ var doc = `{
                     "type": "integer"
                 },
                 "telephone": {
+                    "description": "手机号",
                     "type": "string"
                 },
                 "user_id": {
