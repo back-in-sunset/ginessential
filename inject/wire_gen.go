@@ -6,25 +6,25 @@
 package inject
 
 import (
-	"gin-essential/bll"
 	"gin-essential/dao"
 	"gin-essential/router"
 	"gin-essential/router/api"
+	"gin-essential/srv"
 )
 
 // Injectors from wire.go:
 
-// BuildInjector ..
-func BuildInjector() (*Injector, func(), error) {
+// GenInjector ..
+func GenInjector() (*Injector, func(), error) {
 	db := dao.InitPgDB()
 	user := &dao.User{
 		PgDB: db,
 	}
-	bllUser := bll.User{
+	srvUser := srv.User{
 		UserDB: user,
 	}
 	apiUser := &api.User{
-		UserBll: bllUser,
+		UserSrv: srvUser,
 	}
 	routerRouter := &router.Router{
 		UserAPI: apiUser,

@@ -102,7 +102,7 @@ func findPage(db *gorm.DB, pp schema.PaginationParam, out interface{}) (int, err
 	}
 	current, pageSize := int(pp.Current), int(pp.PageSize)
 	if current > 0 && pageSize > 0 {
-		db.Offset((current - 1) * pageSize).Limit(pageSize)
+		db = db.Offset((current - 1) * pageSize).Limit(pageSize)
 	} else if pageSize > 0 {
 		db = db.Limit(pageSize)
 	}
