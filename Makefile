@@ -1,3 +1,5 @@
+SERVER=192.168.1.203
+
 include .env
 .PHONY:
 	start clean 
@@ -13,6 +15,9 @@ build-linux:
 
 build:
 	go build -o server -ldflags '-w -s'
+
+publish:build-linux
+	scp server root@$(SERVER):
 
 swag:
 	swag init --parseDependency --generalInfo ./main.go

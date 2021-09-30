@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"fmt"
 	"gin-essential/model/entity"
 	"gin-essential/schema"
 	"log"
@@ -17,6 +18,22 @@ const (
 	pgdsn = "host=localhost user=postgres password=e.0369 dbname=postgres port=5555 sslmode=disable TimeZone=Asia/Shanghai"
 	chdsn = "tcp://localhost:9001?database=gorm&read_timeout=10&write_timeout=20"
 )
+
+// Postgres postgres配置参数
+type Postgres struct {
+	Host     string
+	Port     int
+	User     string
+	Password string
+	DBName   string
+	SSLMode  string
+}
+
+// DSN 数据库连接串
+func (a Postgres) DSN() string {
+	return fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s sslmode=%s",
+		a.Host, a.Port, a.User, a.DBName, a.Password, a.SSLMode)
+}
 
 // ModelSet model注入
 var ModelSet = wire.NewSet(
