@@ -2,7 +2,6 @@ package dao
 
 import (
 	"context"
-	"gin-essential/model/entity"
 	"gin-essential/schema"
 	"log"
 	"os"
@@ -34,7 +33,7 @@ func InitPgDB() *gorm.DB {
 	sqlDB.SetMaxOpenConns(100)
 	// SetConnMaxLifetime 设置了连接可复用的最大时间。
 	sqlDB.SetConnMaxLifetime(time.Hour)
-	pgDB.AutoMigrate(entity.User{}, entity.TTSTone{})
+
 	if os.Getenv("GOENV") == "dev" {
 		log.Println("[INFO]> DB Starting.... IN Debug Mode ")
 		pgDB.Debug()

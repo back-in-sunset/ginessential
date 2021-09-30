@@ -4,6 +4,7 @@ import (
 	"gin-essential/ginx"
 	"gin-essential/schema"
 	"gin-essential/srv"
+	"log"
 
 	"gin-essential/pkg/errors"
 	jwtauth "gin-essential/pkg/jwt"
@@ -73,6 +74,7 @@ func (a *User) NatsMessage(c *gin.Context) {
 // @Failure 404 {object} schema.ErrorItem "{code:404, status:"OK", message:"资源不存在"}"
 // @Router /api/users [get]
 func (a *User) Query(c *gin.Context) {
+	log.Println(c.Request.Host, c.Request.RequestURI, c.Request.URL)
 	var params schema.UserQueryParams
 	if err := ginx.ParseQuery(c, &params); err != nil {
 		ginx.ResError(c, err)

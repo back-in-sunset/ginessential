@@ -27,9 +27,8 @@ func (a S) ToFloat64() float64 {
 }
 
 // ToTime timeStr to time
-func (a S) ToTime(timeLayout string) time.Time {
-	t, _ := time.Parse(timeLayout, string(a))
-	return t
+func (a S) ToTime(timeLayout string) (time.Time, error) {
+	return time.Parse(timeLayout, string(a))
 }
 
 // ToMidnightTime 午夜零点
