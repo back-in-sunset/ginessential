@@ -24,7 +24,8 @@ type Users []*User
 // UserQueryParams 用户查询接口
 type UserQueryParams struct {
 	PaginationParam
-	UserName string `form:"user_name"` // 用户名称
+	UserName  string `form:"user_name"` // 用户名称
+	Telephone string `form:"telephone"` // 手机号
 }
 
 // UserQueryResult 用户查询结果

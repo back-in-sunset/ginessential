@@ -22,5 +22,7 @@ publish:build-linux
 swag:
 	swag init --parseDependency --generalInfo ./main.go
 
+wire:
+	@wire inject/* 
 clean:
 	@rm server 2>&1 | true

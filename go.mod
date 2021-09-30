@@ -5,6 +5,7 @@ go 1.14
 require (
 	github.com/ClickHouse/clickhouse-go v1.4.3
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
+	github.com/confluentinc/confluent-kafka-go v1.7.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-gonic/gin v1.7.1
@@ -24,6 +25,7 @@ require (
 	github.com/nats-io/stan.go v0.9.0
 	github.com/pkg/errors v0.8.1
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
+	github.com/spaolacci/murmur3 v1.1.0
 	github.com/swaggo/gin-swagger v1.3.0
 	github.com/swaggo/swag v1.7.0
 	github.com/ugorji/go v1.2.6 // indirect

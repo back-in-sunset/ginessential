@@ -25,13 +25,13 @@ type Router struct {
 
 // IRouter 注册路由
 type IRouter interface {
-	Register(app *gin.Engine) error
+	Registe(app *gin.Engine) error
 	Prefixes() []string
 }
 
-// Register 注册路由
-func (a *Router) Register(app *gin.Engine) error {
-	a.RegisterAPI(app)
+// Registe 注册路由
+func (a *Router) Registe(app *gin.Engine) error {
+	a.RegisteAPI(app)
 	return nil
 }
 
@@ -42,8 +42,8 @@ func (a *Router) Prefixes() []string {
 	}
 }
 
-// RegisterAPI 注册API
-func (a *Router) RegisterAPI(app *gin.Engine) http.Handler {
+// RegisteAPI 注册API
+func (a *Router) RegisteAPI(app *gin.Engine) http.Handler {
 	app.Use(middleware.Cors())
 	// app.Group(strings.Join(a.Prefixes(app = ), ""))
 	// e.Use()
@@ -53,12 +53,16 @@ func (a *Router) RegisterAPI(app *gin.Engine) http.Handler {
 
 	auth := app.Group("api/auth")
 	{
-		auth.POST("register", a.UserAPI.Register)
 		auth.GET("msg", a.UserAPI.NatsMessage)
 	}
 	users := app.Group("api/users")
 	{
 		users.GET("", a.UserAPI.Query)
+		users.POST("", a.UserAPI.Register)
+		users.GET(":id", a.UserAPI.Get)
+		// users.GET("/:id/container/:tid", a.UserAPI.Get)
+		users.GET(":id/start", a.UserAPI.Start)
+
 	}
 
 	return app
@@ -69,8 +73,8 @@ func (a *Router) RegisterAPI(app *gin.Engine) http.Handler {
 // @description This is a sample server Petstore server.
 // @termsOfService http://swagger.io/terms/
 
-// @contact.name API Support
-// @contact.url http://www.swagger.io/support
+// @contact.name Jerry
+// @contact.url http://www.swagger.io/supports
 // @contact.email support@swagger.io
 
 // @license.name Apache 2.0
@@ -86,7 +90,7 @@ func InitGinEngine(r IRouter) *gin.Engine {
 	// prefixes := r.Prefixes()
 
 	// Router register
-	r.Register(app)
+	r.Registe(app)
 
 	app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 

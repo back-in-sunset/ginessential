@@ -15,10 +15,11 @@ var (
 	clusterID string = "test-cluster"
 	clientID  string = "9993"
 	natsURL   string = "nats://127.0.0.1:4222"
+	i                = 0
 )
 
-// Publisher ..
-func Publisher() {
+// NSPublisher ..
+func NSPublisher() {
 	nc, err := nats.Connect(natsURL)
 	if err != nil {
 		log.Fatal(err)
@@ -199,7 +200,6 @@ func PubscriberAck() {
 
 // PubSub 一对多
 func PubSub() {
-	go Publisher()
 	go Subscriber1()
 	go Subscriber2()
 }
@@ -210,16 +210,47 @@ func PubSubWithReply() {
 	PublisherWithReply()
 }
 
-// PubSubWithManualAck 一对多手动ack
-func PubSubWithManualAck() {
-	SubscriberAck()
-	PubscriberAck()
+func NatsPubSub() {
+	NatsPub()
+	NatsSub()
+}
+
+func NatsPub() {
+	nc, err := nats.Connect(natsURL)
+	if err != nil {
+		panic(err)
+	}
+	go func() {
+
+		for {
+			nc.Publish("foo", []byte(fmt.Sprintln("Hello World--", i)))
+			i++
+			time.Sleep(1 * time.Second)
+		}
+	}()
+}
+
+// NatsSub ..
+func NatsSub() {
+	nc, err := nats.Connect(natsURL)
+	if err != nil {
+		panic(err)
+	}
+
+	go func() {
+		for {
+			nc.Subscribe("foo", func(m *nats.Msg) {
+				fmt.Printf("Received a message: %s\n", string(m.Data))
+			})
+		}
+	}()
+
 }
 
 func main() {
 	// 订阅者手动Ack数据 ack失败 消息重发
-	PubSubWithManualAck()
-
+	NSPublisher()
+	// NatsPub()
 	// 订阅增加消息回应
 	// PubSubWithReply()
 	// 创建一个channel，阻塞着

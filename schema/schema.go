@@ -16,7 +16,7 @@ const (
 
 // StatusResult 状态结果
 type StatusResult struct {
-	Status StatusText
+	Status StatusText `json:"status"`
 }
 
 // ErrorResult 响应错误

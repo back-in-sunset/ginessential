@@ -8,7 +8,7 @@ import (
 
 func main() {
 	// 初始化依赖注入器
-	injector, injectorCleanFunc, err := inject.BuildInjector()
+	injector, injectorCleanFunc, err := inject.GenInjector()
 	if err != nil {
 		panic(err)
 	}
