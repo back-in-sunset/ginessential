@@ -9,7 +9,7 @@ import (
 
 	"gin-essential/pkg/errors"
 	jwtauth "gin-essential/pkg/jwt"
-	"gin-essential/pkg/util"
+	"gin-essential/pkg/util/strconvx"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
@@ -105,7 +105,7 @@ func (a *User) Query(c *gin.Context) {
 // @Failure 404 {object} schema.ErrorItem "{code:404, status:"OK", message:"资源不存在"}"
 // @Router /api/users/{id} [get]
 func (a *User) Get(c *gin.Context) {
-	user, err := a.UserSrv.Get(c.Request.Context(), util.S(c.Param("id")).ToInt())
+	user, err := a.UserSrv.Get(c.Request.Context(), strconvx.S(c.Param("id")).ToInt())
 	if err != nil {
 		ginx.ResError(c, err)
 		return
@@ -129,7 +129,7 @@ func (a *User) Get(c *gin.Context) {
 // @Failure 404 {object} schema.ErrorItem "{code:404, status:"OK", message:"资源不存在"}"
 // @Router /api/users/{id}/start [get]
 func (a *User) Start(c *gin.Context) {
-	user, err := a.UserSrv.Get(c.Request.Context(), util.S(c.Param("id")).ToInt())
+	user, err := a.UserSrv.Get(c.Request.Context(), strconvx.S(c.Param("id")).ToInt())
 	if err != nil {
 		ginx.ResError(c, err)
 		return

@@ -47,7 +47,10 @@ func (a *Router) Prefixes() []string {
 
 // RegisteAPI 注册API
 func (a *Router) RegisteAPI(app *gin.Engine) http.Handler {
-	app.Use(middleware.Cors())
+	app.Use(
+		middleware.Cors(),
+		middleware.TraceMiddleware(),
+	)
 	// app.Group(strings.Join(a.Prefixes(app = ), ""))
 	// e.Use()
 	app.GET("heart_beat", func(c *gin.Context) {

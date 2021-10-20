@@ -2,7 +2,7 @@ package bloom
 
 import (
 	"errors"
-	"gin-essential/pkg/hash"
+	"gin-essential/pkg/util/hashx"
 	"strconv"
 )
 
@@ -47,7 +47,7 @@ func (f *Filter) Exsits(data []byte) (bool, error) {
 func (f *Filter) getLocaltions(data []byte) []uint {
 	localtions := make([]uint, maps)
 	for i := uint(0); i < maps; i++ {
-		hashValue := hash.Hash(append(data, byte(i)))
+		hashValue := hashx.Hash(append(data, byte(i)))
 		localtions[i] = uint(hashValue % uint64(f.bits))
 	}
 	return localtions

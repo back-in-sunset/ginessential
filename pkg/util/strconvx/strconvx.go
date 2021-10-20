@@ -1,4 +1,4 @@
-package util
+package strconvx
 
 import (
 	"fmt"
