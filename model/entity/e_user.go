@@ -29,6 +29,7 @@ type UserEntity struct {
 	Telephone string  `json:"telephone" db:"telephone" gorm:"column:telephone;type:varchar(110);not null;unique;"` // 手机号
 	Email     *string `json:"email" db:"email" gorm:"column:email;size:255;index;"`                                // 邮箱
 	Status    int     `json:"status" db:"status" gorm:"column:status;index;default:1;not null;"`                   // 状态(1:启用 2:停用)
+	UserID    string  `json:"user_id" gorm:"column:user_id;index;"`
 }
 
 // Users entity users

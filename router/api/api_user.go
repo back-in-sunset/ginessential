@@ -2,6 +2,7 @@ package api
 
 import (
 	"gin-essential/ginx"
+	"gin-essential/logger"
 	"gin-essential/schema"
 	"gin-essential/srv"
 	"log"
@@ -12,6 +13,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
+	"go.uber.org/zap"
 )
 
 // UserSet 注入User
@@ -87,6 +89,7 @@ func (a *User) Query(c *gin.Context) {
 		ginx.ResError(c, err)
 		return
 	}
+	logger.Logger.Info("user list:", zap.Any("users", userResult.List))
 	ginx.ResPage(c, userResult.List, userResult.Pagination)
 }
 

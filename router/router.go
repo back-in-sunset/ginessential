@@ -18,6 +18,9 @@ import (
 // RouterSet 注入router
 var RouterSet = wire.NewSet(wire.Struct(new(Router), "*"), wire.Bind(new(IRouter), new(*Router)))
 
+// GinSet gin
+var GinSet = wire.NewSet(InitGinEngine)
+
 // Router 路由管理器
 type Router struct {
 	UserAPI *api.User

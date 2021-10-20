@@ -12,12 +12,6 @@ type User struct {
 	entity.UserEntity
 }
 
-// UserClickHose clickhouse data
-type UserClickHose struct {
-	ID uint `json:"user_id" db:"id"`
-	entity.UserEntity
-}
-
 // Users 用户列表
 type Users []*User
 

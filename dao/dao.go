@@ -3,6 +3,7 @@ package dao
 import (
 	"context"
 	"fmt"
+	"gin-essential/model/entity"
 	"gin-essential/schema"
 	"log"
 	"os"
@@ -14,7 +15,7 @@ import (
 )
 
 const (
-	pgdsn = "host=localhost user=postgres password=e.0369 dbname=postgres port=5555 sslmode=disable TimeZone=Asia/Shanghai"
+	pgdsn = "host=10.13.16.203 user=postgres password=e.0369 dbname=postgres port=5432 sslmode=disable TimeZone=Asia/Shanghai"
 	chdsn = "tcp://localhost:9001?database=gorm&read_timeout=10&write_timeout=20"
 )
 
@@ -55,6 +56,7 @@ func InitPgDB() *gorm.DB {
 		pgDB.Debug()
 	}
 
+	pgDB.AutoMigrate(&entity.User{}, &entity.Demo{})
 	return pgDB
 }
 

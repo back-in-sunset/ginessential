@@ -38,9 +38,9 @@ func (a *User) Query(ctx context.Context, params schema.UserQueryParams) (*schem
 	if v := params.Telephone; v != "" {
 		db = db.Where("telephone = ?", v)
 	}
-
 	db.Order("id DESC")
-	var result schema.Users
+
+	result := make(schema.Users, 0, params.PageSize)
 	pr, err := WrapPageQuery(db, params.PaginationParam, &result)
 	if err != nil {
 		return &schema.UserQueryResult{}, err

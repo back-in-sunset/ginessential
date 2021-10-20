@@ -7,6 +7,7 @@ package inject
 
 import (
 	"gin-essential/dao"
+	"gin-essential/logger"
 	"gin-essential/router"
 	"gin-essential/router/api"
 	"gin-essential/srv"
@@ -30,8 +31,10 @@ func GenInjector() (*Injector, func(), error) {
 		UserAPI: apiUser,
 	}
 	engine := router.InitGinEngine(routerRouter)
+	zapLogger := logger.InitLogger()
 	injector := &Injector{
 		Engine: engine,
+		Logger: zapLogger,
 	}
 	return injector, func() {
 	}, nil

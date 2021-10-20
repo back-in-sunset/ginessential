@@ -1,9 +1,10 @@
-//+build wireinject
+// +build wireinject
 
 package inject
 
 import (
 	"gin-essential/dao"
+	"gin-essential/logger"
 	"gin-essential/router"
 	"gin-essential/router/api"
 	"gin-essential/srv"
@@ -17,10 +18,11 @@ func GenInjector() (*Injector, func(), error) {
 		dao.InitPgDB,
 		dao.ModelSet,
 		router.RouterSet,
-		router.InitGinEngine,
 		srv.SrvSet,
 		api.APISet,
+		logger.LoggerSet,
+		router.GinSet,
 		InjectorSet,
 	)
-	return new(Injector), nil, nil
+	return new(Injector), func() { logger.Logger.Sync() }, nil
 }

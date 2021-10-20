@@ -2,7 +2,9 @@ package srv
 
 import (
 	"context"
+	contextx "gin-essential/ctx"
 	"gin-essential/dao"
+	"gin-essential/logger"
 	"gin-essential/schema"
 
 	"github.com/google/wire"
@@ -42,6 +44,9 @@ func (a *User) QueryPage(ctx context.Context, params schema.UserQueryParams) (*s
 
 // Get 查询单条数据
 func (a *User) Get(ctx context.Context, userID int) (*schema.User, error) {
+	user, _ := contextx.FromUserID(ctx)
+
+	logger.Logger.Info(user)
 	return a.UserDB.Get(ctx, userID)
 }
 
