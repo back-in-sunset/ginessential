@@ -11,6 +11,7 @@ type (
 	transLockCtx struct{}
 	userIDCtx    struct{}
 	traceIDCtx   struct{}
+	stackCtx     struct{}
 )
 
 // NewTrans 创建事务的上下文
@@ -76,4 +77,20 @@ func FromTraceID(ctx context.Context) (string, bool) {
 		}
 	}
 	return "", false
+}
+
+// NewStackContext 创建Stack上下文
+func NewStackContext(ctx context.Context, stack error) context.Context {
+	return context.WithValue(ctx, stackCtx{}, stack)
+}
+
+// FromStackContext 从上下文中获取Stack
+func FromStackContext(ctx context.Context) error {
+	v := ctx.Value(stackCtx{})
+	if v != nil {
+		if s, ok := v.(error); ok {
+			return s
+		}
+	}
+	return nil
 }

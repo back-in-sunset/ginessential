@@ -1,4 +1,181 @@
+definitions:
+  schema.ErrorItem:
+    properties:
+      code:
+        description: 错误码
+        type: integer
+      message:
+        description: 错误信息
+        type: string
+      staus:
+        type: string
+    type: object
+  schema.PaginationResult:
+    properties:
+      current:
+        type: integer
+      page_size:
+        type: integer
+      total:
+        type: integer
+    type: object
+  schema.User:
+    properties:
+      email:
+        description: 邮箱
+        type: string
+      name:
+        description: 用户名
+        type: string
+      password:
+        description: 密码
+        type: string
+      status:
+        description: 状态(1:启用 2:停用)
+        type: integer
+      telephone:
+        description: 手机号
+        type: string
+      user_id:
+        type: string
+    type: object
+  schema.UserQueryResult:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/schema.User'
+        type: array
+      pagination:
+        $ref: '#/definitions/schema.PaginationResult'
+    type: object
 info:
   contact: {}
-paths: {}
+paths:
+  /api/users:
+    get:
+      consumes:
+      - application/json
+      description: 查询数据
+      parameters:
+      - default: 1
+        description: 分页索引
+        in: query
+        name: current
+        required: true
+        type: integer
+      - default: 10
+        description: 分页大小
+        in: query
+        name: page_size
+        required: true
+        type: integer
+      - description: 用户名称
+        in: query
+        name: user_name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{staus:"OK", data:响应数据}'
+          schema:
+            $ref: '#/definitions/schema.UserQueryResult'
+        "400":
+          description: '{code:400, status:"OK", message:"请求参数错误"}'
+          schema:
+            $ref: '#/definitions/schema.ErrorItem'
+        "404":
+          description: '{code:404, status:"OK", message:"资源不存在"}'
+          schema:
+            $ref: '#/definitions/schema.ErrorItem'
+      summary: 查询数据
+      tags:
+      - Users 用户
+    post:
+      consumes:
+      - application/json
+      description: 注册
+      parameters:
+      - description: 用户
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/schema.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{staus:"OK", data:响应数据}'
+          schema:
+            $ref: '#/definitions/schema.UserQueryResult'
+        "400":
+          description: '{code:400, status:"OK", message:"请求参数错误"}'
+          schema:
+            $ref: '#/definitions/schema.ErrorItem'
+        "404":
+          description: '{code:404, status:"OK", message:"资源不存在"}'
+          schema:
+            $ref: '#/definitions/schema.ErrorItem'
+      summary: 注册
+      tags:
+      - Users 用户
+  /api/users/{id}:
+    get:
+      consumes:
+      - application/json
+      description: 查询数据
+      parameters:
+      - description: 用户ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{staus:"OK", data:响应数据}'
+          schema:
+            $ref: '#/definitions/schema.UserQueryResult'
+        "400":
+          description: '{code:400, status:"OK", message:"请求参数错误"}'
+          schema:
+            $ref: '#/definitions/schema.ErrorItem'
+        "404":
+          description: '{code:404, status:"OK", message:"资源不存在"}'
+          schema:
+            $ref: '#/definitions/schema.ErrorItem'
+      summary: 查询数据
+      tags:
+      - Users 用户
+  /api/users/{id}/start:
+    get:
+      consumes:
+      - application/json
+      description: 查询数据
+      parameters:
+      - description: 用户ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{staus:"OK", data:响应数据}'
+          schema:
+            $ref: '#/definitions/schema.UserQueryResult'
+        "400":
+          description: '{code:400, status:"OK", message:"请求参数错误"}'
+          schema:
+            $ref: '#/definitions/schema.ErrorItem'
+        "404":
+          description: '{code:404, status:"OK", message:"资源不存在"}'
+          schema:
+            $ref: '#/definitions/schema.ErrorItem'
+      summary: 查询数据
+      tags:
+      - Users 用户
 swagger: "2.0"

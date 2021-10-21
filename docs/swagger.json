@@ -3,5 +3,271 @@
     "info": {
         "contact": {}
     },
-    "paths": {}
+    "paths": {
+        "/api/users": {
+            "get": {
+                "description": "查询数据",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users 用户"
+                ],
+                "summary": "查询数据",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "分页索引",
+                        "name": "current",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "分页大小",
+                        "name": "page_size",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "用户名称",
+                        "name": "user_name",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{staus:\"OK\", data:响应数据}",
+                        "schema": {
+                            "$ref": "#/definitions/schema.UserQueryResult"
+                        }
+                    },
+                    "400": {
+                        "description": "{code:400, status:\"OK\", message:\"请求参数错误\"}",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorItem"
+                        }
+                    },
+                    "404": {
+                        "description": "{code:404, status:\"OK\", message:\"资源不存在\"}",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorItem"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "注册",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users 用户"
+                ],
+                "summary": "注册",
+                "parameters": [
+                    {
+                        "description": "用户",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/schema.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{staus:\"OK\", data:响应数据}",
+                        "schema": {
+                            "$ref": "#/definitions/schema.UserQueryResult"
+                        }
+                    },
+                    "400": {
+                        "description": "{code:400, status:\"OK\", message:\"请求参数错误\"}",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorItem"
+                        }
+                    },
+                    "404": {
+                        "description": "{code:404, status:\"OK\", message:\"资源不存在\"}",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorItem"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/{id}": {
+            "get": {
+                "description": "查询数据",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users 用户"
+                ],
+                "summary": "查询数据",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "用户ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{staus:\"OK\", data:响应数据}",
+                        "schema": {
+                            "$ref": "#/definitions/schema.UserQueryResult"
+                        }
+                    },
+                    "400": {
+                        "description": "{code:400, status:\"OK\", message:\"请求参数错误\"}",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorItem"
+                        }
+                    },
+                    "404": {
+                        "description": "{code:404, status:\"OK\", message:\"资源不存在\"}",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorItem"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/{id}/start": {
+            "get": {
+                "description": "查询数据",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users 用户"
+                ],
+                "summary": "查询数据",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "用户ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{staus:\"OK\", data:响应数据}",
+                        "schema": {
+                            "$ref": "#/definitions/schema.UserQueryResult"
+                        }
+                    },
+                    "400": {
+                        "description": "{code:400, status:\"OK\", message:\"请求参数错误\"}",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorItem"
+                        }
+                    },
+                    "404": {
+                        "description": "{code:404, status:\"OK\", message:\"资源不存在\"}",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorItem"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "schema.ErrorItem": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "错误码",
+                    "type": "integer"
+                },
+                "message": {
+                    "description": "错误信息",
+                    "type": "string"
+                },
+                "staus": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.PaginationResult": {
+            "type": "object",
+            "properties": {
+                "current": {
+                    "type": "integer"
+                },
+                "page_size": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "schema.User": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "description": "邮箱",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "用户名",
+                    "type": "string"
+                },
+                "password": {
+                    "description": "密码",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "状态(1:启用 2:停用)",
+                    "type": "integer"
+                },
+                "telephone": {
+                    "description": "手机号",
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "schema.UserQueryResult": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/schema.User"
+                    }
+                },
+                "pagination": {
+                    "$ref": "#/definitions/schema.PaginationResult"
+                }
+            }
+        }
+    }
 }

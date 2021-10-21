@@ -3,6 +3,7 @@ package ginx
 import (
 	"encoding/json"
 	"fmt"
+	"gin-essential/logger"
 	"gin-essential/pkg/errors"
 	"gin-essential/schema"
 	"net/http"
@@ -17,6 +18,8 @@ const (
 	ReqBodyKey = "/req-body"
 	// ResBodyKey 响应body
 	ResBodyKey = "/res-body"
+	// LoggerReqBodyKey 请求body
+	LoggerReqBodyKey = "/logger-req-body"
 )
 
 // ParseJSON 解析请求JSON
@@ -110,7 +113,12 @@ func ResError(c *gin.Context, err error, status ...int) {
 		if res.Message == "" {
 			res.Message = err.Error()
 		}
+	}
 
+	if code := res.Code; code >= 400 && code < 500 {
+		logger.Warn(fmt.Sprintf("%+v", err))
+	} else if code >= 500 {
+		logger.Error(fmt.Sprintf("%+v", err))
 	}
 
 	eitem := schema.ErrorItem{
@@ -118,6 +126,7 @@ func ResError(c *gin.Context, err error, status ...int) {
 		Code:    res.Code,
 		Message: res.Message,
 	}
+
 	resJSON(c, res.StatusCode, schema.ErrorResult{ErrorItem: eitem})
 }
 

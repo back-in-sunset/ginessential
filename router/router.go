@@ -47,12 +47,26 @@ func (a *Router) Prefixes() []string {
 
 // RegisteAPI 注册API
 func (a *Router) RegisteAPI(app *gin.Engine) http.Handler {
+
+	// app.Group(strings.Join(a.Prefixes(app = ), ""))
+	// e.Use()
+
+	zapSkipURLs := []string{"/heart_beat", "/swagger/*any"}
+	zapSkipper := func(c *gin.Context) bool {
+		for _, urlPath := range zapSkipURLs {
+			if c.Request.URL.Path == urlPath {
+				return true
+			}
+		}
+		return false
+	}
+
 	app.Use(
 		middleware.Cors(),
 		middleware.TraceMiddleware(),
+		middleware.ZapLogger(zapSkipper),
 	)
-	// app.Group(strings.Join(a.Prefixes(app = ), ""))
-	// e.Use()
+
 	app.GET("heart_beat", func(c *gin.Context) {
 		c.JSON(200, gin.H{"msg": "ok"})
 	})
@@ -67,7 +81,7 @@ func (a *Router) RegisteAPI(app *gin.Engine) http.Handler {
 		users.POST("", a.UserAPI.Register)
 		users.GET(":id", a.UserAPI.Get)
 		// users.GET("/:id/container/:tid", a.UserAPI.Get)
-		users.GET(":id/start", a.UserAPI.Start)
+		// users.GET(":id/start", a.UserAPI.Start)
 
 	}
 
@@ -97,7 +111,6 @@ func InitGinEngine(r IRouter) *gin.Engine {
 
 	// Router register
 	r.Registe(app)
-
 	app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	return app

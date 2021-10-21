@@ -3,6 +3,7 @@ package dao
 import (
 	"context"
 	"gin-essential/model/entity"
+	"gin-essential/pkg/errors"
 	"gin-essential/schema"
 
 	"github.com/google/wire"
@@ -61,7 +62,7 @@ func (a *User) Get(ctx context.Context, userID int) (*schema.User, error) {
 	if err != nil {
 		return nil, err
 	} else if !ok {
-		return nil, nil
+		return nil, errors.New("fsdf")
 	}
 
 	return &user, nil

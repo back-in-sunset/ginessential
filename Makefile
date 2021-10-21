@@ -5,7 +5,7 @@ include .env
 .PHONY:
 	start clean 
 
-start: swag
+start:
 	@go run $(SERVER_PATH)/*.go 
 
 start-linux:build-linux
@@ -21,7 +21,7 @@ publish:build-linux
 	scp server root@$(SERVER):
 
 swag:
-	swag init --dir=$(SERVER_PATH) 
+	swag init --parseDependency --dir=$(SERVER_PATH) 
 	
 generate:
 	go generate ./...
