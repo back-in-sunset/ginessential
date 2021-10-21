@@ -1,6 +1,8 @@
 package dao
 
 import (
+	"context"
+	"fmt"
 	"gin-essential/model/entity"
 	"gin-essential/schema"
 	"log"
@@ -8,20 +10,30 @@ import (
 	"time"
 
 	"github.com/google/wire"
-	"gorm.io/driver/clickhouse"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 const (
-	pgdsn = "host=localhost user=postgres password=e.0369 dbname=postgres port=5432 sslmode=disable TimeZone=Asia/Shanghai"
+	pgdsn = "host=10.13.16.203 user=postgres password=e.0369 dbname=postgres port=5432 sslmode=disable TimeZone=Asia/Shanghai"
 	chdsn = "tcp://localhost:9001?database=gorm&read_timeout=10&write_timeout=20"
 )
 
-// ModelSet model注入
-var ModelSet = wire.NewSet(
-	UserSet,
-)
+// Postgres postgres配置参数
+type Postgres struct {
+	Host     string
+	Port     int
+	User     string
+	Password string
+	DBName   string
+	SSLMode  string
+}
+
+// DSN 数据库连接串
+func (a Postgres) DSN() string {
+	return fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s sslmode=%s",
+		a.Host, a.Port, a.User, a.DBName, a.Password, a.SSLMode)
+}
 
 // InitPgDB postgreSQL 初始化
 func InitPgDB() *gorm.DB {
@@ -33,43 +45,19 @@ func InitPgDB() *gorm.DB {
 
 	sqlDB, _ := pgDB.DB()
 	// SetMaxIdleConns 设置空闲连接池中连接的最大数量
-	sqlDB.SetMaxIdleConns(300)
-	// SetMaxOpenConns 设置打开数据库连接的最大数量。
-	sqlDB.SetMaxOpenConns(400)
-	// SetConnMaxLifetime 设置了连接可复用的最大时间。
-	sqlDB.SetConnMaxLifetime(time.Hour)
-	pgDB.AutoMigrate(entity.User{}, entity.TTSTone{})
-	if os.Getenv("GOENV") == "dev" {
-		log.Println("[INFO]> DB Starting.... IN Debug Mode ")
-		pgDB.Debug()
-	}
-
-	return pgDB
-}
-
-// InitChDB clickhouse 初始化
-func InitChDB() *gorm.DB {
-	// ClickHouse 初始化
-	chDB, err := gorm.Open(clickhouse.Open(chdsn), &gorm.Config{})
-	if err != nil {
-		panic(err)
-	}
-
-	sqlDB, _ := chDB.DB()
-	// SetMaxIdleConns 设置空闲连接池中连接的最大数量
-	sqlDB.SetMaxIdleConns(10)
+	sqlDB.SetMaxIdleConns(80)
 	// SetMaxOpenConns 设置打开数据库连接的最大数量。
 	sqlDB.SetMaxOpenConns(100)
 	// SetConnMaxLifetime 设置了连接可复用的最大时间。
 	sqlDB.SetConnMaxLifetime(time.Hour)
 
-	// chDB.AutoMigrate(entity.User{})
 	if os.Getenv("GOENV") == "dev" {
 		log.Println("[INFO]> DB Starting.... IN Debug Mode ")
-		chDB.Debug()
+		pgDB.Debug()
 	}
 
-	return chDB
+	pgDB.AutoMigrate(&entity.User{}, &entity.Demo{})
+	return pgDB
 }
 
 // WrapPageQuery 包装成带有分页的查询
@@ -106,7 +94,7 @@ func findPage(db *gorm.DB, pp schema.PaginationParam, out interface{}) (int, err
 	}
 	current, pageSize := int(pp.Current), int(pp.PageSize)
 	if current > 0 && pageSize > 0 {
-		db.Offset((current - 1) * pageSize).Limit(pageSize)
+		db = db.Offset((current - 1) * pageSize).Limit(pageSize)
 	} else if pageSize > 0 {
 		db = db.Limit(pageSize)
 	}
@@ -114,3 +102,20 @@ func findPage(db *gorm.DB, pp schema.PaginationParam, out interface{}) (int, err
 	err = db.Find(out).Error
 	return int(count), err
 }
+
+// FindOne 查询单条数据
+func FindOne(ctx context.Context, db *gorm.DB, out interface{}) (bool, error) {
+	db.First(out)
+	if db.Error != nil {
+		if db.Error == gorm.ErrRecordNotFound {
+			return false, nil
+		}
+		return false, db.Error
+	}
+	return true, nil
+}
+
+// ModelSet model注入
+var ModelSet = wire.NewSet(
+	UserSet,
+)

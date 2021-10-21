@@ -6,6 +6,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// SkipperFunc 定义中间件跳过函数
+type SkipperFunc func(*gin.Context) bool
+
 // Cors 跨域
 func Cors() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -38,3 +41,13 @@ func Cors() gin.HandlerFunc {
 // 		c.Next()
 // 	}
 // }
+
+// SkipHandler 忽略handler
+func SkipHandler(c *gin.Context, skipperFuncs ...SkipperFunc) bool {
+	for _, skipperFunc := range skipperFuncs {
+		if skipperFunc(c) {
+			return true
+		}
+	}
+	return false
+}

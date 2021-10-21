@@ -3,18 +3,12 @@ package schema
 import (
 	"gin-essential/model/entity"
 	"gin-essential/pkg/errors"
-	"gin-essential/pkg/util"
+	"gin-essential/pkg/util/random"
 )
 
 // User 用户
 type User struct {
 	UserID int `json:"user_id" gorm:"column:id"` // 用户ID
-	entity.UserEntity
-}
-
-// UserClickHose clickhouse data
-type UserClickHose struct {
-	ID uint `json:"user_id" db:"id"`
 	entity.UserEntity
 }
 
@@ -24,13 +18,14 @@ type Users []*User
 // UserQueryParams 用户查询接口
 type UserQueryParams struct {
 	PaginationParam
-	UserName string `form:"user_name"` // 用户名称
+	UserName  string `form:"user_name"` // 用户名称
+	Telephone string `form:"telephone"` // 手机号
 }
 
 // UserQueryResult 用户查询结果
 type UserQueryResult struct {
-	Data       Users
-	PageResult *PaginationResult
+	List       Users
+	Pagination *PaginationResult
 }
 
 // Validate  数据验证
@@ -44,7 +39,7 @@ func (a *User) Validate() error {
 	}
 
 	if len(a.Name) == 0 {
-		a.Name = util.RandomString(10)
+		a.Name = random.RandomString(10)
 	}
 	return nil
 }

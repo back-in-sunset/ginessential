@@ -1,6 +1,8 @@
 package contextx
 
-import "context"
+import (
+	"context"
+)
 
 // 定义全局上下文中的键
 type (
@@ -8,6 +10,8 @@ type (
 	noTransCtx   struct{}
 	transLockCtx struct{}
 	userIDCtx    struct{}
+	traceIDCtx   struct{}
+	stackCtx     struct{}
 )
 
 // NewTrans 创建事务的上下文
@@ -57,4 +61,36 @@ func FromUserID(ctx context.Context) (string, bool) {
 		}
 	}
 	return "", false
+}
+
+// NewTraceID 新建traceID
+func NewTraceID(ctx context.Context, traceID string) context.Context {
+	return context.WithValue(ctx, traceIDCtx{}, traceID)
+}
+
+// FromTraceID get traceID from ctx
+func FromTraceID(ctx context.Context) (string, bool) {
+	v := ctx.Value(traceIDCtx{})
+	if v != nil {
+		if s, ok := v.(string); ok {
+			return s, ok
+		}
+	}
+	return "", false
+}
+
+// NewStackContext 创建Stack上下文
+func NewStackContext(ctx context.Context, stack error) context.Context {
+	return context.WithValue(ctx, stackCtx{}, stack)
+}
+
+// FromStackContext 从上下文中获取Stack
+func FromStackContext(ctx context.Context) error {
+	v := ctx.Value(stackCtx{})
+	if v != nil {
+		if s, ok := v.(error); ok {
+			return s
+		}
+	}
+	return nil
 }

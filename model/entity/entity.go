@@ -5,6 +5,7 @@ import (
 	contextx "gin-essential/ctx"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 )
 
 func getDB(ctx context.Context, defDB *gorm.DB) *gorm.DB {
@@ -22,6 +23,6 @@ func getDB(ctx context.Context, defDB *gorm.DB) *gorm.DB {
 }
 
 // getDBWithModel ...
-func getDBWithModel(ctx context.Context, defDB *gorm.DB, m interface{}) *gorm.DB {
-	return getDB(ctx, defDB).Model(m)
+func getDBWithTable(ctx context.Context, defDB *gorm.DB, tabler schema.Tabler) *gorm.DB {
+	return getDB(ctx, defDB).Table(tabler.TableName())
 }
