@@ -3,11 +3,27 @@ package bloom
 import (
 	"errors"
 	"gin-essential/pkg/util/hashx"
+	"sort"
 	"strconv"
+
+	"github.com/go-redis/redis"
 )
 
 const (
-	maps = 14
+	maps      = 14
+	setScript = `
+for _, offset in ipairs(ARGV) do
+	redis.call("setbit", KEYS[1], offset, 1)
+end
+`
+	testScript = `
+for _, offset in ipairs(ARGV) do
+	if tonumber(redis.call("getbit", KEYS[1], offset)) == 0 then
+		return false
+	end
+end
+return true
+`
 )
 
 // ErrTooLargeOffset indicates the offset is too large in bitset.
@@ -36,12 +52,22 @@ func New(store interface{}, key string, bits uint) *Filter {
 
 // Add adds data into f.
 func (f *Filter) Add(data []byte) error {
-	return nil
+	localtions := f.getLocaltions(data)
+	return f.bitSet.add(localtions)
 }
 
 // Exsits checks if data is in f.
 func (f *Filter) Exsits(data []byte) (bool, error) {
-	return false, nil
+	localtions := f.getLocaltions(data)
+	isSet, err := f.bitSet.check(localtions)
+	if err != nil {
+		return false, err
+	}
+	if !isSet {
+		return false, nil
+	}
+
+	return true, nil
 }
 
 func (f *Filter) getLocaltions(data []byte) []uint {
@@ -53,15 +79,42 @@ func (f *Filter) getLocaltions(data []byte) []uint {
 	return localtions
 }
 
+type store interface {
+	Eval(script string, key string, args []string) (interface{}, error)
+}
+
 type redisBitSet struct {
-	store interface{}
+	store store
 	key   string
 	bits  uint
 }
 
+type cache struct {
+	m map[string][]string
+}
+
+var memcache cache
+
+func (r cache) Eval(script string, key string, args []string) (interface{}, error) {
+	sort.Strings(args)
+
+	storedArgs, ok := r.m[key]
+	if !ok {
+		return 0, redis.Nil
+	}
+
+	for k, storedArg := range storedArgs {
+		if storedArg != args[k] {
+			return 0, nil
+		}
+	}
+
+	return 1, nil
+}
+
 func newRedisBitSet(key string, bits uint) redisBitSet {
 	return redisBitSet{
-		store: nil,
+		store: memcache,
 		key:   key,
 		bits:  bits,
 	}
@@ -80,11 +133,34 @@ func (r *redisBitSet) buildOffsetArgs(offset []uint) ([]string, error) {
 	return args, nil
 }
 
-// func (r *redisBitSet) check(offsets []uint) (bool, error) {
-// 	args, err := r.buildOffsetArgs(offsets)
-// 	if err != nil {
-// 		return false, err
-// 	}
+func (r *redisBitSet) check(offsets []uint) (bool, error) {
+	args, err := r.buildOffsetArgs(offsets)
+	if err != nil {
+		return false, err
+	}
 
-// 	return false, nil
-// }
+	resp, err := r.store.Eval(testScript, r.key, args)
+	if err != nil {
+		return false, err
+	}
+
+	exists, ok := resp.(int64)
+	if !ok {
+		return false, nil
+	}
+
+	return exists == 1, nil
+}
+
+func (r *redisBitSet) set(offsets []uint) error {
+	args, err := r.buildOffsetArgs(offsets)
+	if err != nil {
+		return err
+	}
+	_, err = r.store.Eval(setScript, r.key, args)
+	if err == redis.Nil {
+		return nil
+	}
+
+	return nil
+}

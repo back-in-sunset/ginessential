@@ -14,6 +14,7 @@ require (
 	github.com/go-openapi/spec v0.20.3 // indirect
 	github.com/go-openapi/swag v0.19.15 // indirect
 	github.com/go-playground/validator/v10 v10.6.1 // indirect
+	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/wire v0.5.0
 	github.com/jmoiron/sqlx v1.3.4
@@ -35,7 +36,7 @@ require (
 	golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c // indirect
 	golang.org/x/tools v0.1.5 // indirect
 	gorm.io/driver/clickhouse v0.1.0
-	gorm.io/driver/mysql v1.1.1
+	gorm.io/driver/mysql v1.1.3
 	gorm.io/driver/postgres v1.1.2
 	gorm.io/gorm v1.21.15 // direct
 )

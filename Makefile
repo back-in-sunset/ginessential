@@ -1,24 +1,26 @@
-SERVER=192.168.1.203
+SERVER=10.13.16.203
 SERVER_PATH=cmd
+LINUX_USER=jassery
+LINUX_APP_PATH=app/server_new
 
 include .env
 .PHONY:
 	start clean 
 
-start:
+start:wire
 	@go run $(SERVER_PATH)/*.go 
 
 start-linux:build-linux
 	./server > out.log 2>&1 
 
-build-linux:
+build-linux:wire
 	GOOS=linux GOARCH=amd64 go build -o server -ldflags '-w -s' $(SERVER_PATH)/*.go
 
-build:
+build:wire
 	go build -o server -ldflags '-w -s' $(SERVER_PATH)/*.go
 
 publish:build-linux
-	scp server root@$(SERVER):
+	scp server $(LINUX_USER)@$(SERVER):$(LINUX_APP_PATH)
 
 swag:
 	swag init --parseDependency --dir=$(SERVER_PATH) 

@@ -15,6 +15,7 @@ var UserSet = wire.NewSet(wire.Struct(new(User), "*"))
 type User struct {
 	UserDB *dao.User
 	// UserChDB *dao.UserChDB
+
 }
 
 // IsTelePhoneExist 检查手机号是否存在

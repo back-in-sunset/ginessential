@@ -39,7 +39,7 @@ func (a *User) Validate() error {
 	}
 
 	if len(a.Name) == 0 {
-		a.Name = random.RandomString(10)
+		a.Name = random.RandomString()
 	}
 	return nil
 }
