@@ -1,7 +1,7 @@
 SERVER=10.13.16.203
 SERVER_PATH=cmd
 LINUX_USER=jassery
-LINUX_APP_PATH=app/server_new
+LINUX_APP_PATH=server_new
 
 include .env
 .PHONY:
