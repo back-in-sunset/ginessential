@@ -2,7 +2,7 @@ package bloom
 
 import (
 	"errors"
-	"gin-essential/pkg/util/hashx"
+	"gin-essential/pkg/hashx"
 	"sort"
 	"strconv"
 

@@ -3,7 +3,7 @@ package schema
 import (
 	"gin-essential/model/entity"
 	"gin-essential/pkg/errors"
-	"gin-essential/pkg/util/random"
+	"gin-essential/pkg/stringx"
 )
 
 // User 用户
@@ -39,7 +39,7 @@ func (a *User) Validate() error {
 	}
 
 	if len(a.Name) == 0 {
-		a.Name = random.RandomString()
+		a.Name = stringx.Rand()
 	}
 	return nil
 }

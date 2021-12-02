@@ -36,11 +36,6 @@ func (ls *lockedSource) Int63() int64 {
 	return ls.source.Int63()
 }
 
-// RandomString 随机字符串
-func RandomString() string {
-	return Randn(defaultRandLen)
-}
-
 // Randn ..
 func Randn(n int) string {
 	b := make([]byte, n)
@@ -68,4 +63,9 @@ func RandID() string {
 	}
 
 	return fmt.Sprintf("%x%x%x%x", b[0:2], b[2:4], b[4:6], b[6:8])
+}
+
+// Rand returns a random string.
+func Rand() string {
+	return Randn(defaultRandLen)
 }
