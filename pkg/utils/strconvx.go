@@ -1,7 +1,6 @@
-package strconvx
+package utils
 
 import (
-	"fmt"
 	"strconv"
 	"time"
 )
@@ -28,11 +27,12 @@ func (a S) ToFloat64() float64 {
 
 // ToTime timeStr to time
 func (a S) ToTime(timeLayout string) (time.Time, error) {
-	return time.Parse(timeLayout, string(a))
+	return ToTime(timeLayout, func() string {
+		return string(a)
+	})
 }
 
-// ToMidnightTime 午夜零点
-func (a S) ToMidnightTime() time.Time {
-	t, _ := time.Parse(DateTimeLayout, fmt.Sprintf("%s 00:00:00", a))
-	return t
+// ToTime ..
+func ToTime(timeLayout string, timeStrFn func() string) (time.Time, error) {
+	return time.Parse(timeLayout, timeStrFn())
 }
