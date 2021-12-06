@@ -1,6 +1,8 @@
 package main
 
 import (
+	"gin-essential/cmd/config"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -18,9 +20,7 @@ type Item struct {
 	ItemID string `gorm:"column:item_id"`
 }
 
-const dsn = "payfun_dms_service:Paymentunion123@@tcp(rm-8vbjy34g96075qpoklo.mysql.zhangbei.rds.aliyuncs.com:3408)/dms?charset=utf8mb4&parseTime=True&loc=Local"
-
-var db, _ = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+var db, _ = gorm.Open(mysql.Open(config.DSN), &gorm.Config{})
 
 // QueryDevice ..
 func QueryDevice() {

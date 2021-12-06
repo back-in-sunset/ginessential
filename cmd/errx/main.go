@@ -8,9 +8,10 @@ import (
 
 // C demo
 func C() error {
-	_, err := os.Open("abc")
+	file, err := os.Open("abc")
+	defer file.Close()
 	if err != nil {
-		err = errors.WithStack(err) // 对err进行包装，附带堆栈信息处理。
+		err = errors.New("open file failed") // 对err进行包装，附带堆栈信息处理。
 		return err
 	}
 	return nil
