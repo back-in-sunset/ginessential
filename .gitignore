@@ -2,3 +2,4 @@
 *.out
 .env
 cmd/config/*
+server
