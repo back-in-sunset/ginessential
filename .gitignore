@@ -1,5 +1,5 @@
 *test*
 *.out
 .env
-cmd/config/*
+cmd/*
 server

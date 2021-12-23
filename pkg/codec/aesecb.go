@@ -5,7 +5,7 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"encoding/base64"
-	"errors"
+	"gin-essential/pkg/errors"
 )
 
 // ErrPaddingSize indicates bad padding size.

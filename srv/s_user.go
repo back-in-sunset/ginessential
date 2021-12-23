@@ -2,7 +2,7 @@ package srv
 
 import (
 	"context"
-	"gin-essential/dao"
+	"gin-essential/repo/dao"
 	"gin-essential/schema"
 
 	"github.com/google/wire"

@@ -36,8 +36,13 @@ func (a *User) Register(c *gin.Context) {
 	ctx := c.Request.Context()
 	// 获取参数
 	var params schema.User
-	ginx.ParseJSON(c, &params)
-	err := params.Validate()
+	err := ginx.ParseJSON(c, &params)
+	if err != nil {
+		ginx.ResError(c, err)
+		return
+	}
+
+	err = params.Validate()
 	if err != nil {
 		ginx.ResError(c, err)
 		return

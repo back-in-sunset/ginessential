@@ -1,7 +1,8 @@
-SERVER=10.13.16.203
+# SERVER=10.13.16.203
+SERVER=10.1.71.108
 SERVER_PATH=cmd
 LINUX_USER=jassery
-LINUX_APP_PATH=server_new
+LINUX_APP_PATH=Server/server_new
 
 include .env
 .PHONY:
@@ -21,6 +22,7 @@ build:wire
 
 publish:build-linux
 	scp server $(LINUX_USER)@$(SERVER):$(LINUX_APP_PATH)
+	@rm server 2>&1 | true
 
 swag:
 	swag init --parseDependency --dir=$(SERVER_PATH) 

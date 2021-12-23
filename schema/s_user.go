@@ -8,7 +8,7 @@ import (
 
 // User 用户
 type User struct {
-	UserID int `json:"user_id" gorm:"column:id"` // 用户ID
+	UserID string `json:"user_id" gorm:"column:id"` // 用户ID
 	entity.UserEntity
 }
 
@@ -31,7 +31,7 @@ type UserQueryResult struct {
 // Validate  数据验证
 func (a *User) Validate() error {
 	if len(a.Telephone) != 11 {
-		return errors.New400Response("手机号格式不对")
+		return errors.New500Response("手机号格式不对")
 	}
 
 	if len(a.Password) < 6 {

@@ -15,8 +15,7 @@ import (
 )
 
 const (
-	pgdsn = "host=10.13.16.203 user=postgres password=e.0369 dbname=postgres port=5432 sslmode=disable TimeZone=Asia/Shanghai"
-	chdsn = "tcp://localhost:9001?database=gorm&read_timeout=10&write_timeout=20"
+	pgdsn = "host=10.1.71.108 user=postgres password=e.0369 dbname=postgres port=5432 sslmode=disable TimeZone=Asia/Shanghai"
 )
 
 // Postgres postgres配置参数

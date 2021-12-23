@@ -8,6 +8,7 @@ require (
 	github.com/confluentinc/confluent-kafka-go v1.7.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/dsnet/compress v0.0.1 // indirect
 	github.com/gin-gonic/gin v1.7.1
 	github.com/go-kit/kit v0.10.0 // indirect
 	github.com/go-openapi/jsonreference v0.19.6 // indirect

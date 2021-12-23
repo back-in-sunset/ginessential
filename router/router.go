@@ -45,31 +45,21 @@ func (a *Router) Prefixes() []string {
 	}
 }
 
+var heartHandler = func(c *gin.Context) {
+	c.JSON(200, gin.H{"msg": "ok"})
+}
+
 // RegisteAPI 注册API
 func (a *Router) RegisteAPI(app *gin.Engine) http.Handler {
-
-	// app.Group(strings.Join(a.Prefixes(app = ), ""))
-	// e.Use()
-
-	zapSkipURLs := []string{"/heart_beat", "/swagger/*any"}
-	zapSkipper := func(c *gin.Context) bool {
-		for _, urlPath := range zapSkipURLs {
-			if c.Request.URL.Path == urlPath {
-				return true
-			}
-		}
-		return false
-	}
 
 	app.Use(
 		middleware.Cors(),
 		middleware.TraceMiddleware(),
-		middleware.ZapLogger(zapSkipper),
+		middleware.CopyBodyMiddleware(),
+		middleware.ZapLogger(middleware.AllowPathPrefixSkipper("/swagger")),
 	)
 
-	app.GET("heart_beat", func(c *gin.Context) {
-		c.JSON(200, gin.H{"msg": "ok"})
-	})
+	app.GET("heart_beat", heartHandler)
 
 	auth := app.Group("api/auth")
 	{

@@ -3,8 +3,8 @@
 package inject
 
 import (
-	"gin-essential/dao"
 	"gin-essential/logger"
+	"gin-essential/repo/dao"
 	"gin-essential/router"
 	"gin-essential/router/api"
 	"gin-essential/srv"

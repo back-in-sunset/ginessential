@@ -18,8 +18,6 @@ const (
 	ReqBodyKey = "/req-body"
 	// ResBodyKey 响应body
 	ResBodyKey = "/res-body"
-	// LoggerReqBodyKey 请求body
-	LoggerReqBodyKey = "/logger-req-body"
 )
 
 // ParseJSON 解析请求JSON
