@@ -4,12 +4,13 @@ import (
 	"gin-essential/model/entity"
 	"gin-essential/pkg/errors"
 	"gin-essential/pkg/stringx"
+	"gin-essential/pkg/utils"
 )
 
 // User 用户
 type User struct {
 	UserID string `json:"user_id" gorm:"column:id"` // 用户ID
-	entity.UserEntity
+	entity.User
 }
 
 // Users 用户列表
@@ -38,8 +39,28 @@ func (a *User) Validate() error {
 		return errors.New400Response("密码少于6位")
 	}
 
+	return nil
+}
+
+// FillDefault 填充默认参数
+func (a *User) FillDefault() {
 	if len(a.Name) == 0 {
 		a.Name = stringx.Rand()
 	}
-	return nil
+}
+
+// SetUUIDToUserID 设置UUID为用户ID
+func (a *User) SetUUIDToUserID() {
+	if a != nil && a.UserID != "" {
+		return
+	}
+	a.SetUserID(utils.NewUUID())
+}
+
+// SetUserID 设置用户ID
+func (a *User) SetUserID(userID string) {
+	if a != nil && a.UserID != "" {
+		return
+	}
+	a.UserID = userID
 }

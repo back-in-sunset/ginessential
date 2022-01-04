@@ -2,7 +2,7 @@ package dao
 
 import (
 	"context"
-	"gin-essential/model/entity"
+	"gin-essential/model/do"
 	"gin-essential/pkg/errors"
 	"gin-essential/schema"
 
@@ -20,8 +20,9 @@ type User struct {
 
 // Create 创建
 func (a *User) Create(ctx context.Context, user schema.User) error {
-	db := entity.GetUserDB(ctx, a.PgDB).Create(&entity.User{
-		UserEntity: user.UserEntity,
+	db := do.GetUserDB(ctx, a.PgDB).Create(&do.User{
+		UserID: user.UserID,
+		User:   user.User,
 	})
 	if err := db.Error; err != nil {
 		return err
@@ -31,7 +32,7 @@ func (a *User) Create(ctx context.Context, user schema.User) error {
 
 // Query 查询
 func (a *User) Query(ctx context.Context, params schema.UserQueryParams) (*schema.UserQueryResult, error) {
-	db := entity.GetUserDB(ctx, a.PgDB)
+	db := do.GetUserDB(ctx, a.PgDB)
 
 	if v := params.UserName; v != "" {
 		db = db.Where("name like ?", "%"+v+"%")
@@ -54,8 +55,8 @@ func (a *User) Query(ctx context.Context, params schema.UserQueryParams) (*schem
 }
 
 // Get 获取单条数据
-func (a *User) Get(ctx context.Context, userID int) (*schema.User, error) {
-	db := entity.GetUserDB(ctx, a.PgDB).Where("id = ?", userID)
+func (a *User) Get(ctx context.Context, userID string) (*schema.User, error) {
+	db := do.GetUserDB(ctx, a.PgDB).Where("id = ?", userID)
 
 	var user schema.User
 	ok, err := FindOne(ctx, db, &user)
@@ -69,8 +70,8 @@ func (a *User) Get(ctx context.Context, userID int) (*schema.User, error) {
 }
 
 // Update 更新
-func (a *User) Update(ctx context.Context, userID int, user schema.User) error {
-	db := entity.GetUserDB(ctx, a.PgDB)
+func (a *User) Update(ctx context.Context, userID string, user schema.User) error {
+	db := do.GetUserDB(ctx, a.PgDB)
 
 	db.Where("id = ?", userID).Updates(&user).Omit("id", "telephone", "email")
 	if err := db.Error; err != nil {
@@ -80,8 +81,8 @@ func (a *User) Update(ctx context.Context, userID int, user schema.User) error {
 }
 
 // Delete 删除
-func (a *User) Delete(ctx context.Context, userID int) error {
-	db := entity.GetUserDB(ctx, a.PgDB).Where("id = ?", userID).Delete(entity.User{})
+func (a *User) Delete(ctx context.Context, userID string) error {
+	db := do.GetUserDB(ctx, a.PgDB).Where("id = ?", userID).Delete(do.User{})
 	if err := db.Error; err != nil {
 		return err
 	}

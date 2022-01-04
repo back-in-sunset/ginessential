@@ -6,14 +6,8 @@ import (
 
 // Demo 用户
 type Demo struct {
-	DemoID int `json:"demo_id" gorm:"column:id"` // ID
-	entity.DemoEntity
-}
-
-// DemoClickHose clickhouse data
-type DemoClickHose struct {
-	ID uint `json:"user_id" db:"id"`
-	entity.DemoEntity
+	DemoID string `json:"demo_id" gorm:"column:id"` // ID
+	entity.Demo
 }
 
 // Demos 用户列表

@@ -3,6 +3,7 @@ package dao
 import (
 	"context"
 	"fmt"
+	contextx "gin-essential/ctx"
 	"gin-essential/model/entity"
 	"gin-essential/schema"
 	"log"
@@ -16,6 +17,12 @@ import (
 
 const (
 	pgdsn = "host=10.1.71.108 user=postgres password=e.0369 dbname=postgres port=5432 sslmode=disable TimeZone=Asia/Shanghai"
+)
+
+// ModelSet model注入
+var ModelSet = wire.NewSet(
+	UserSet,
+	TransSet,
 )
 
 // Postgres postgres配置参数
@@ -114,7 +121,17 @@ func FindOne(ctx context.Context, db *gorm.DB, out interface{}) (bool, error) {
 	return true, nil
 }
 
-// ModelSet model注入
-var ModelSet = wire.NewSet(
-	UserSet,
-)
+// TransSet 注入
+var TransSet = wire.NewSet(wire.Struct(new(Trans), "*"))
+
+// Trans 事务
+type Trans struct {
+	DB *gorm.DB
+}
+
+// Exec 事务执行
+func (a *Trans) Exec(ctx context.Context, fn func(context.Context) error) error {
+	return a.DB.Transaction(func(db *gorm.DB) error {
+		return fn(contextx.NewTrans(ctx, db))
+	})
+}

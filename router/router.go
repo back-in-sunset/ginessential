@@ -56,7 +56,7 @@ func (a *Router) RegisteAPI(app *gin.Engine) http.Handler {
 		middleware.Cors(),
 		middleware.TraceMiddleware(),
 		middleware.CopyBodyMiddleware(),
-		middleware.ZapLogger(middleware.AllowPathPrefixSkipper("/swagger")),
+		middleware.ZapLogger(middleware.AllowPathPrefixSkipper("swagger", "heart_beat")),
 	)
 
 	app.GET("heart_beat", heartHandler)
@@ -72,7 +72,6 @@ func (a *Router) RegisteAPI(app *gin.Engine) http.Handler {
 		users.GET(":id", a.UserAPI.Get)
 		// users.GET("/:id/container/:tid", a.UserAPI.Get)
 		// users.GET(":id/start", a.UserAPI.Start)
-
 	}
 
 	return app

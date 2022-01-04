@@ -9,7 +9,7 @@ import (
 
 func main() {
 	// timeNano()
-	parseTime()
+	// parseTime()
 }
 
 const size = 40
@@ -20,25 +20,6 @@ func given(src []byte) {
 		src[0] = a + byte(i)
 		src = src[1:]
 	}
-}
-
-var data = `{"name":"jerry","age":"35","sex":"male"}`
-
-func m() {
-	a := struct {
-		Name string `json:"name"`
-		Age  int    `json:"age"`
-		Data string `json:"data"`
-	}{
-		Name: "4330200700100495",
-		Age:  11,
-		Data: data,
-	}
-	d, err := json.Marshal(a)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf(string(d))
 }
 
 func group(num int) int {
@@ -74,4 +55,20 @@ func parseTime() {
 		panic(err)
 	}
 	fmt.Printf("%v", s)
+}
+
+var data = `{"name":"jerry","age":"35","sex":"male"}`
+
+var cars = []string{"toyota", "p7", "nisson"}
+
+var params = struct {
+	testString      string
+	testInt         int
+	testIntArray    []int
+	testStringArray []string
+}{
+	testString:      "string",
+	testInt:         11,
+	testIntArray:    []int{-1, -2, -3},
+	testStringArray: []string{"string1", "string2"},
 }

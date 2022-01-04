@@ -115,7 +115,7 @@ func Subscriber() {
 	go func() {
 		for {
 			// Read the reply
-			msg, err := sub.NextMsg(3 * time.Second)
+			msg, err := sub.NextMsg(1)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -164,7 +164,7 @@ func SubscriberAck() {
 			log.Println("[INFO] SubscriberAck subscribe:", i, "---->", m.Subject, m)
 			time.Sleep(2 * time.Second)
 			m.Ack()
-		}, stan.SetManualAckMode(), stan.AckWait(5*time.Second))
+		}, stan.SetManualAckMode(), stan.AckWait(5))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -210,11 +210,13 @@ func PubSubWithReply() {
 	PublisherWithReply()
 }
 
+// NatsPubSub ..
 func NatsPubSub() {
 	NatsPub()
 	NatsSub()
 }
 
+// NatsPub ..
 func NatsPub() {
 	nc, err := nats.Connect(natsURL)
 	if err != nil {

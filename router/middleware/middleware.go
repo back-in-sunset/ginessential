@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -46,6 +47,12 @@ func AllowPathPrefixSkipper(prefixes ...string) SkipperFunc {
 		pathLen := len(path)
 
 		for _, p := range prefixes {
+			if rl := len(p); rl > 0 {
+				if p[0] != '/' {
+					p = strings.Join([]string{"/", p}, "")
+				}
+			}
+
 			if pl := len(p); pathLen >= pl && path[:pl] == p {
 				return true
 			}

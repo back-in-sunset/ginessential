@@ -21,8 +21,12 @@ func GenInjector() (*Injector, func(), error) {
 	user := &dao.User{
 		PgDB: db,
 	}
+	trans := &dao.Trans{
+		DB: db,
+	}
 	srvUser := srv.User{
 		UserDB: user,
+		Trans:  trans,
 	}
 	apiUser := &api.User{
 		UserSrv: srvUser,
