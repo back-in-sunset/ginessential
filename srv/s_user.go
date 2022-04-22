@@ -2,6 +2,7 @@ package srv
 
 import (
 	"context"
+	"gin-essential/pkg/utils"
 	"gin-essential/repo/dao"
 	"gin-essential/schema"
 
@@ -33,8 +34,13 @@ func (a *User) IsTelePhoneExist(ctx context.Context, telephone string) bool {
 
 // Register 用户注册
 func (a *User) Register(ctx context.Context, user schema.User) error {
-	return a.Trans.Exec(ctx, func(c context.Context) error {
-		return a.UserDB.Create(ctx, user)
+	return a.Trans.Exec(ctx, func(ctx context.Context) error {
+		user.UserID = utils.NewUUID()
+		err := a.UserDB.Create(ctx, user)
+		if err != nil {
+			return err
+		}
+		return nil
 	})
 
 }

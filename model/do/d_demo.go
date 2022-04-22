@@ -24,5 +24,5 @@ type Demos []*Demo
 
 // TableName 表名
 func (*Demo) TableName() string {
-	return "demo"
+	return "demos"
 }

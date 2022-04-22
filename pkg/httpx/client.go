@@ -80,7 +80,21 @@ func Post(ctx context.Context, urlStr string, body io.Reader, result interface{}
 	}
 
 	return parseResponseJSON(resp, result)
+}
 
+// Put Put
+func Put(ctx context.Context, urlStr string, body io.Reader, result interface{}, options ...RequestOption) error {
+	w := new(bytes.Buffer)
+	if err := json.NewEncoder(w).Encode(body); err != nil {
+		return err
+	}
+
+	resp, err := Request(ctx, urlStr, http.MethodPut, w, options...)
+	if err != nil {
+		return err
+	}
+
+	return parseResponseJSON(resp, result)
 }
 
 // Request HTTP请求

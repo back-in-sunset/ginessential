@@ -3,6 +3,7 @@ package ginx
 import (
 	"encoding/json"
 	"fmt"
+	contextx "gin-essential/ctx"
 	"gin-essential/logger"
 	"gin-essential/pkg/errors"
 	"gin-essential/schema"
@@ -116,7 +117,12 @@ func ResError(c *gin.Context, err error, status ...int) {
 	if code := res.Code; code >= 400 && code < 500 {
 		logger.Warn(fmt.Sprintf("%+v", err))
 	} else if code >= 500 {
-		logger.Error(fmt.Sprintf("%+v", err))
+		traceID, ok := contextx.FromTraceID(c.Request.Context())
+		if ok {
+			logger.Error(fmt.Sprintf("[%s] %+v", traceID, err))
+		} else {
+			logger.Error(fmt.Sprintf("%+v", err))
+		}
 	}
 
 	eitem := schema.ErrorItem{

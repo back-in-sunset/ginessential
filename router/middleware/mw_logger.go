@@ -62,14 +62,14 @@ func ZapLogger(skippers ...SkipperFunc) gin.HandlerFunc {
 		LogStr := fmt.Sprintf("[http] %s %s %s status:%d(%dms)", p, c.Request.Method, c.ClientIP(), c.Writer.Status(), timeConsuming)
 		// INFO
 		if status == http.StatusOK {
-			logger.Logger.Sugar().Info(
+			logger.SugarLogger.Info(
 				LogStr,
 				string(headerBs),
 			)
 		}
 		// WARN
 		if status >= http.StatusBadRequest && status < http.StatusInternalServerError {
-			logger.Logger.Sugar().Warn(
+			logger.SugarLogger.Warn(
 				LogStr,
 				string(headerBs),
 			)
@@ -77,7 +77,7 @@ func ZapLogger(skippers ...SkipperFunc) gin.HandlerFunc {
 
 		// ERROR
 		if status >= http.StatusInternalServerError {
-			logger.Logger.Sugar().Warn(
+			logger.SugarLogger.Error(
 				LogStr,
 				string(headerBs),
 			)

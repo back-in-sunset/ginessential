@@ -15,7 +15,7 @@ func GetUserDB(ctx context.Context, defDB *gorm.DB) *gorm.DB {
 // User 用户
 type User struct {
 	gorm.Model
-	UserID string `json:"user_id" gorm:"column:user_id;index;"`
+	UserID string `json:"user_id" gorm:"column:user_id;type:varchar(36);index;not null;"`
 	entity.User
 }
 

@@ -56,14 +56,14 @@ func (a *User) Query(ctx context.Context, params schema.UserQueryParams) (*schem
 
 // Get 获取单条数据
 func (a *User) Get(ctx context.Context, userID string) (*schema.User, error) {
-	db := do.GetUserDB(ctx, a.PgDB).Where("id = ?", userID)
+	db := do.GetUserDB(ctx, a.PgDB).Where("user_id = ?", userID)
 
 	var user schema.User
 	ok, err := FindOne(ctx, db, &user)
 	if err != nil {
 		return nil, err
 	} else if !ok {
-		return nil, errors.New("fsdf")
+		return nil, errors.New500Response("new error")
 	}
 
 	return &user, nil
@@ -73,7 +73,7 @@ func (a *User) Get(ctx context.Context, userID string) (*schema.User, error) {
 func (a *User) Update(ctx context.Context, userID string, user schema.User) error {
 	db := do.GetUserDB(ctx, a.PgDB)
 
-	db.Where("id = ?", userID).Updates(&user).Omit("id", "telephone", "email")
+	db.Where("id = ?", userID).Updates(&user).Omit("user_id", "telephone", "email")
 	if err := db.Error; err != nil {
 		return err
 	}
@@ -82,7 +82,7 @@ func (a *User) Update(ctx context.Context, userID string, user schema.User) erro
 
 // Delete 删除
 func (a *User) Delete(ctx context.Context, userID string) error {
-	db := do.GetUserDB(ctx, a.PgDB).Where("id = ?", userID).Delete(do.User{})
+	db := do.GetUserDB(ctx, a.PgDB).Where("user_id = ?", userID).Delete(&do.User{})
 	if err := db.Error; err != nil {
 		return err
 	}

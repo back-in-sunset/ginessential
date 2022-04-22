@@ -25,7 +25,7 @@ var doc = `{
     "paths": {
         "/api/users": {
             "get": {
-                "description": "查询数据",
+                "description": "查询多条数据",
                 "consumes": [
                     "application/json"
                 ],
@@ -35,7 +35,7 @@ var doc = `{
                 "tags": [
                     "Users 用户"
                 ],
-                "summary": "查询数据",
+                "summary": "查询多条数据",
                 "parameters": [
                     {
                         "type": "integer",
@@ -108,7 +108,7 @@ var doc = `{
                     "200": {
                         "description": "{staus:\"OK\", data:响应数据}",
                         "schema": {
-                            "$ref": "#/definitions/schema.UserQueryResult"
+                            "$ref": "#/definitions/schema.StatusResult"
                         }
                     },
                     "400": {
@@ -141,7 +141,7 @@ var doc = `{
                 "summary": "查询数据",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "用户ID",
                         "name": "id",
                         "in": "path",
@@ -152,51 +152,7 @@ var doc = `{
                     "200": {
                         "description": "{staus:\"OK\", data:响应数据}",
                         "schema": {
-                            "$ref": "#/definitions/schema.UserQueryResult"
-                        }
-                    },
-                    "400": {
-                        "description": "{code:400, status:\"OK\", message:\"请求参数错误\"}",
-                        "schema": {
-                            "$ref": "#/definitions/schema.ErrorItem"
-                        }
-                    },
-                    "404": {
-                        "description": "{code:404, status:\"OK\", message:\"资源不存在\"}",
-                        "schema": {
-                            "$ref": "#/definitions/schema.ErrorItem"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/users/{id}/start": {
-            "get": {
-                "description": "查询数据",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Users 用户"
-                ],
-                "summary": "查询数据",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "用户ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{staus:\"OK\", data:响应数据}",
-                        "schema": {
-                            "$ref": "#/definitions/schema.UserQueryResult"
+                            "$ref": "#/definitions/schema.User"
                         }
                     },
                     "400": {
@@ -246,6 +202,14 @@ var doc = `{
                 }
             }
         },
+        "schema.StatusResult": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
         "schema.User": {
             "type": "object",
             "properties": {
@@ -261,15 +225,12 @@ var doc = `{
                     "description": "密码",
                     "type": "string"
                 },
-                "status": {
-                    "description": "状态(1:启用 2:停用)",
-                    "type": "integer"
-                },
                 "telephone": {
                     "description": "手机号",
                     "type": "string"
                 },
                 "user_id": {
+                    "description": "用户ID",
                     "type": "string"
                 }
             }

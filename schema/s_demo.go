@@ -6,7 +6,7 @@ import (
 
 // Demo 用户
 type Demo struct {
-	DemoID string `json:"demo_id" gorm:"column:id"` // ID
+	DemoID string `json:"demo_id" gorm:"column:demo_id"` // ID
 	entity.Demo
 }
 

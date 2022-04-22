@@ -20,25 +20,19 @@ const (
 var LoggerSet = wire.NewSet(InitLogger)
 
 // Logger 实例
-var Logger *zap.Logger
+var Logger zap.Logger
+
+// SugarLogger 简版logger
+var SugarLogger zap.SugaredLogger
 
 // InitLogger 初始化日志
 func InitLogger() *zap.Logger {
 	writeSyncer := getLogWriter()
 	encoder := getEncoder()
 	core := zapcore.NewCore(encoder, writeSyncer, zapcore.DebugLevel)
-
-	Logger = zap.New(core)
-	Debug = Logger.Debug
-	Info = Logger.Info
-	Warn = Logger.Warn
-	Error = Logger.Error
-	Fatal = Logger.Fatal
-	Panic = Logger.Panic
-	DPanic = Logger.DPanic
-
-	return Logger
-
+	Logger = *zap.New(core)
+	SugarLogger = *Logger.Sugar()
+	return &Logger
 }
 
 func getEncoder() zapcore.Encoder {

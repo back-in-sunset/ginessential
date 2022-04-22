@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	contextx "gin-essential/ctx"
-	"gin-essential/model/entity"
+	"gin-essential/model/do"
 	"gin-essential/schema"
 	"log"
 	"os"
@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	pgdsn = "host=10.1.71.108 user=postgres password=e.0369 dbname=postgres port=5432 sslmode=disable TimeZone=Asia/Shanghai"
+	pgdsn = "host=10.13.16.212 user=postgres password=e.0369 dbname=postgres port=5432 sslmode=disable TimeZone=Asia/Shanghai"
 )
 
 // ModelSet model注入
@@ -44,7 +44,8 @@ func (a Postgres) DSN() string {
 // InitPgDB postgreSQL 初始化
 func InitPgDB() *gorm.DB {
 	// PostgresSQL 初始化
-	pgDB, err := gorm.Open(postgres.Open(pgdsn), &gorm.Config{})
+	pgDB, err := gorm.Open(postgres.Open(pgdsn),
+		&gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
@@ -62,7 +63,7 @@ func InitPgDB() *gorm.DB {
 		pgDB.Debug()
 	}
 
-	pgDB.AutoMigrate(&entity.User{}, &entity.Demo{})
+	pgDB.AutoMigrate(&do.User{}, &do.Demo{})
 	return pgDB
 }
 
@@ -131,6 +132,10 @@ type Trans struct {
 
 // Exec 事务执行
 func (a *Trans) Exec(ctx context.Context, fn func(context.Context) error) error {
+	if _, ok := contextx.FromTrans(ctx); ok {
+		return fn(ctx)
+	}
+
 	return a.DB.Transaction(func(db *gorm.DB) error {
 		return fn(contextx.NewTrans(ctx, db))
 	})

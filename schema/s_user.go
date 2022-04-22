@@ -9,7 +9,7 @@ import (
 
 // User 用户
 type User struct {
-	UserID string `json:"user_id" gorm:"column:id"` // 用户ID
+	UserID string `json:"user_id" gorm:"column:user_id"` // 用户ID
 	entity.User
 }
 

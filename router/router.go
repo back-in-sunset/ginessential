@@ -89,7 +89,7 @@ func (a *Router) RegisteAPI(app *gin.Engine) http.Handler {
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @host petstore.swagger.io
+// @host 127.0.0.1:8080
 // @BasePath /v2
 
 // InitGinEngine 初始化gin引擎
