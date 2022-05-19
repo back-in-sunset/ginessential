@@ -1,16 +1,16 @@
 package schema
 
 import (
-	"gin-essential/model/entity"
+	"gin-essential/model/do"
 	"gin-essential/pkg/errors"
 	"gin-essential/pkg/stringx"
-	"gin-essential/pkg/utils"
+	"gin-essential/shared/id"
 )
 
 // User 用户
 type User struct {
-	UserID string `json:"user_id" gorm:"column:user_id"` // 用户ID
-	entity.User
+	UserID id.UserID `json:"user_id" gorm:"column:user_id"` // 用户ID
+	do.User
 }
 
 // Users 用户列表
@@ -47,20 +47,4 @@ func (a *User) FillDefault() {
 	if len(a.Name) == 0 {
 		a.Name = stringx.Rand()
 	}
-}
-
-// SetUUIDToUserID 设置UUID为用户ID
-func (a *User) SetUUIDToUserID() {
-	if a != nil && a.UserID != "" {
-		return
-	}
-	a.SetUserID(utils.NewUUID())
-}
-
-// SetUserID 设置用户ID
-func (a *User) SetUserID(userID string) {
-	if a != nil && a.UserID != "" {
-		return
-	}
-	a.UserID = userID
 }

@@ -1,10 +1,12 @@
-package srv
+package usersrv
 
 import (
 	"context"
 	"gin-essential/pkg/utils"
 	"gin-essential/repo/dao"
+	userdao "gin-essential/repo/dao/user"
 	"gin-essential/schema"
+	"gin-essential/shared/id"
 
 	"github.com/google/wire"
 )
@@ -14,7 +16,7 @@ var UserSet = wire.NewSet(wire.Struct(new(User), "*"))
 
 // User ..
 type User struct {
-	UserDB *dao.User
+	UserDB *userdao.User
 	// UserChDB *dao.UserChDB
 	Trans *dao.Trans
 }
@@ -35,7 +37,7 @@ func (a *User) IsTelePhoneExist(ctx context.Context, telephone string) bool {
 // Register 用户注册
 func (a *User) Register(ctx context.Context, user schema.User) error {
 	return a.Trans.Exec(ctx, func(ctx context.Context) error {
-		user.UserID = utils.NewUUID()
+		user.UserID = id.ObjID(utils.MustUUID()).ToUserID()
 		err := a.UserDB.Create(ctx, user)
 		if err != nil {
 			return err

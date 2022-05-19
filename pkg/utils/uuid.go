@@ -2,8 +2,8 @@ package utils
 
 import "github.com/google/uuid"
 
-// NewUUID returns a uuid string.
-func NewUUID() string {
+// MustUUID returns a uuid string.
+func MustUUID() string {
 	return uuid.New().String()
 }
 

@@ -3,6 +3,7 @@ SERVER=10.1.71.108
 SERVER_PATH=cmd
 LINUX_USER=jassery
 LINUX_APP_PATH=Server/server_new
+NOW = $(date '+%Y%m%d%I%M%S')
 
 include .env
 .PHONY:
@@ -10,9 +11,6 @@ include .env
 
 start:wire
 	@go run $(SERVER_PATH)/*.go 
-
-start-linux:build-linux
-	./server > out.log 2>&1 
 
 build-linux:wire
 	GOOS=linux GOARCH=amd64 go build -o server -ldflags '-w -s' $(SERVER_PATH)/*.go

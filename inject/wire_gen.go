@@ -8,9 +8,10 @@ package inject
 import (
 	"gin-essential/logger"
 	"gin-essential/repo/dao"
+	"gin-essential/repo/dao/user"
 	"gin-essential/router"
 	"gin-essential/router/api"
-	"gin-essential/srv"
+	"gin-essential/srv/user"
 )
 
 // Injectors from wire.go:
@@ -18,18 +19,18 @@ import (
 // GenInjector ..
 func GenInjector() (*Injector, func(), error) {
 	db := dao.InitPgDB()
-	user := &dao.User{
+	user := &userdao.User{
 		PgDB: db,
 	}
 	trans := &dao.Trans{
 		DB: db,
 	}
-	srvUser := srv.User{
+	usersrvUser := usersrv.User{
 		UserDB: user,
 		Trans:  trans,
 	}
 	apiUser := &api.User{
-		UserSrv: srvUser,
+		UserSrv: usersrvUser,
 	}
 	routerRouter := &router.Router{
 		UserAPI: apiUser,

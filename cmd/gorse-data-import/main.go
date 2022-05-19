@@ -1,7 +1,7 @@
 package main
 
 import (
-	"gin-essential/cmd/config"
+	"essential/cmd/config"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
