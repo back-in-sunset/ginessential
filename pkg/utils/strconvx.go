@@ -2,6 +2,7 @@ package utils
 
 import (
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -15,7 +16,7 @@ type S string
 
 // ToInt string转int
 func (a S) ToInt() int {
-	i, _ := strconv.Atoi(string(a))
+	i, _ := strconv.Atoi(strings.TrimSpace(string(a)))
 	return i
 }
 

@@ -90,7 +90,7 @@ func (a *Router) RegisteAPI(app *gin.Engine) http.Handler {
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 
 // @host 127.0.0.1:8080
-// @BasePath /v2
+// @BasePath /
 
 // InitGinEngine 初始化gin引擎
 func InitGinEngine(r IRouter) *gin.Engine {

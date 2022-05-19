@@ -1,28 +1,9 @@
 package do
 
-import (
-	"context"
-	"gin-essential/model/entity"
-
-	"gorm.io/gorm"
-)
-
-// GetUserDB 获取用户存储
-func GetUserDB(ctx context.Context, defDB *gorm.DB) *gorm.DB {
-	return getDBWithTable(ctx, defDB, new(User))
-}
-
-// User 用户
+// User ..
 type User struct {
-	gorm.Model
-	UserID string `json:"user_id" gorm:"column:user_id;type:varchar(36);index;not null;"`
-	entity.User
+	Name      string  `json:"name" db:"name" gorm:"column:name;type:varchar(20);not null;"`                                    // 用户名
+	Password  string  `json:"password,omitempty" db:"password" gorm:"->:false;<-;column:password;type:varchar(100);not null;"` // 密码
+	Telephone string  `json:"telephone" db:"telephone" gorm:"column:telephone;type:varchar(110);not null;unique;"`             // 手机号
+	Email     *string `json:"email" db:"email" gorm:"column:email;size:255;index;"`                                            // 邮箱
 }
-
-// TableName 表名
-func (*User) TableName() string {
-	return "users"
-}
-
-// Users entity users
-type Users []*User

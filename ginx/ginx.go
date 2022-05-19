@@ -12,6 +12,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
+	"gopkg.in/validator.v2"
 )
 
 const (
@@ -26,6 +27,10 @@ func ParseJSON(c *gin.Context, obj interface{}) error {
 	if err := c.ShouldBindJSON(obj); err != nil {
 		return errors.Wrap400Response(err, fmt.Sprintf("解析请求参数发生错误 - %s", err.Error()))
 	}
+	if err := validator.Validate(obj); err != nil {
+		return errors.Wrap400Response(err, fmt.Sprintf("参数校验不通过 - %s", err.Error()))
+	}
+
 	return nil
 }
 
