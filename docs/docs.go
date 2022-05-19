@@ -42,21 +42,16 @@ var doc = `{
                         "default": 1,
                         "description": "分页索引",
                         "name": "current",
-                        "in": "query"
+                        "in": "query",
+                        "required": true
                     },
                     {
                         "type": "integer",
                         "default": 10,
                         "description": "分页大小",
                         "name": "page_size",
-                        "in": "query"
-                    },
-                    {
-                        "type": "boolean",
-                        "default": true,
-                        "description": "是否分页",
-                        "name": "pagination",
-                        "in": "query"
+                        "in": "query",
+                        "required": true
                     },
                     {
                         "type": "string",
@@ -67,21 +62,9 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "{status:\"OK\", data:响应数据}",
+                        "description": "{staus:\"OK\", data:响应数据}",
                         "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/schema.SuccessResult"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/schema.UserQueryResult"
-                                        }
-                                    }
-                                }
-                            ]
+                            "$ref": "#/definitions/schema.UserQueryResult"
                         }
                     },
                     "400": {
@@ -223,19 +206,6 @@ var doc = `{
             "type": "object",
             "properties": {
                 "status": {
-                    "type": "string"
-                }
-            }
-        },
-        "schema.SuccessResult": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "description": "返回数据",
-                    "type": "object"
-                },
-                "status": {
-                    "description": "\"OK\"",
                     "type": "string"
                 }
             }

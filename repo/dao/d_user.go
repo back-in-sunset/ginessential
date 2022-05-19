@@ -1,11 +1,9 @@
-package userdao
+package dao
 
 import (
 	"context"
 	"gin-essential/model/do"
-	"gin-essential/model/entity"
 	"gin-essential/pkg/errors"
-	"gin-essential/repo/dao"
 	"gin-essential/schema"
 
 	"github.com/google/wire"
@@ -22,10 +20,9 @@ type User struct {
 
 // Create 创建
 func (a *User) Create(ctx context.Context, user schema.User) error {
-	db := entity.GetUserDB(ctx, a.PgDB).Create(&entity.User{
+	db := do.GetUserDB(ctx, a.PgDB).Create(&do.User{
 		UserID: user.UserID,
 		User:   user.User,
-		Status: entity.UserStautsOn,
 	})
 	if err := db.Error; err != nil {
 		return err
@@ -35,7 +32,7 @@ func (a *User) Create(ctx context.Context, user schema.User) error {
 
 // Query 查询
 func (a *User) Query(ctx context.Context, params schema.UserQueryParams) (*schema.UserQueryResult, error) {
-	db := entity.GetUserDB(ctx, a.PgDB)
+	db := do.GetUserDB(ctx, a.PgDB)
 
 	if v := params.UserName; v != "" {
 		db = db.Where("name like ?", "%"+v+"%")
@@ -46,7 +43,7 @@ func (a *User) Query(ctx context.Context, params schema.UserQueryParams) (*schem
 	db.Order("id DESC")
 
 	result := make(schema.Users, 0, params.PageSize)
-	pr, err := dao.WrapPageQuery(db, params.PaginationParam, &result)
+	pr, err := WrapPageQuery(db, params.PaginationParam, &result)
 	if err != nil {
 		return &schema.UserQueryResult{}, err
 	}
@@ -59,10 +56,10 @@ func (a *User) Query(ctx context.Context, params schema.UserQueryParams) (*schem
 
 // Get 获取单条数据
 func (a *User) Get(ctx context.Context, userID string) (*schema.User, error) {
-	db := entity.GetUserDB(ctx, a.PgDB).Where("user_id = ?", userID)
+	db := do.GetUserDB(ctx, a.PgDB).Where("user_id = ?", userID)
 
 	var user schema.User
-	ok, err := dao.FindOne(ctx, db, &user)
+	ok, err := FindOne(ctx, db, &user)
 	if err != nil {
 		return nil, err
 	} else if !ok {
@@ -74,7 +71,7 @@ func (a *User) Get(ctx context.Context, userID string) (*schema.User, error) {
 
 // Update 更新
 func (a *User) Update(ctx context.Context, userID string, user schema.User) error {
-	db := entity.GetUserDB(ctx, a.PgDB)
+	db := do.GetUserDB(ctx, a.PgDB)
 
 	db.Where("id = ?", userID).Updates(&user).Omit("user_id", "telephone", "email")
 	if err := db.Error; err != nil {
@@ -85,7 +82,7 @@ func (a *User) Update(ctx context.Context, userID string, user schema.User) erro
 
 // Delete 删除
 func (a *User) Delete(ctx context.Context, userID string) error {
-	db := entity.GetUserDB(ctx, a.PgDB).Where("user_id = ?", userID).Delete(&do.User{})
+	db := do.GetUserDB(ctx, a.PgDB).Where("user_id = ?", userID).Delete(&do.User{})
 	if err := db.Error; err != nil {
 		return err
 	}

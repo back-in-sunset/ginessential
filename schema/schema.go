@@ -33,7 +33,7 @@ type ErrorItem struct {
 
 // PaginationParam 分页查询条件
 type PaginationParam struct {
-	Pagination bool `form:"pagination,default=true"`                // 是否使用分页查询
+	Pagination bool `form:"-"`                                      // 是否使用分页查询
 	OnlyCount  bool `form:"-"`                                      // 是否仅查询count
 	Current    uint `form:"current,default=1"`                      // 当前页
 	PageSize   uint `form:"page_size,default=10" binding:"max=100"` // 页大小
@@ -54,6 +54,6 @@ type ListResult struct {
 
 // SuccessResult 成功结果
 type SuccessResult struct {
-	Status StatusText  `json:"status"` // "OK"
-	Data   interface{} `json:"data"`   // 返回数据
+	Status StatusText  `json:"status"`
+	Data   interface{} `json:"data"` // 返回数据
 }
