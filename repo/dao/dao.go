@@ -19,6 +19,12 @@ const (
 	pgdsn = "host=10.13.16.212 user=postgres password=e.0369 dbname=postgres port=5432 sslmode=disable TimeZone=Asia/Shanghai"
 )
 
+// ModelSet model注入
+var ModelSet = wire.NewSet(
+	UserSet,
+	TransSet,
+)
+
 // Postgres postgres配置参数
 type Postgres struct {
 	Host     string

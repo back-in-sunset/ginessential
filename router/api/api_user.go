@@ -3,11 +3,10 @@ package api
 import (
 	"gin-essential/ginx"
 	"gin-essential/schema"
+	"gin-essential/srv"
 
 	"gin-essential/pkg/errors"
 	jwtauth "gin-essential/pkg/jwt"
-
-	usersrv "gin-essential/srv/user"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
@@ -18,7 +17,7 @@ var UserSet = wire.NewSet(wire.Struct(new(User), "*"))
 
 // User 用户
 type User struct {
-	UserSrv usersrv.User
+	UserSrv srv.User
 }
 
 // Register 注册
@@ -37,6 +36,12 @@ func (a *User) Register(c *gin.Context) {
 	// 获取参数
 	var user schema.User
 	err := ginx.ParseJSON(c, &user)
+	if err != nil {
+		ginx.ResError(c, err)
+		return
+	}
+
+	err = user.Validate()
 	if err != nil {
 		ginx.ResError(c, err)
 		return
@@ -68,20 +73,16 @@ func (a *User) NatsMessage(c *gin.Context) {
 	ginx.ResError(c, errors.New400Response("注册失败"))
 }
 
-// DocInt .
-type DocInt int
-
 // Query 查询多条数据
 // @Tags Users 用户
 // @Summary 查询多条数据
 // @Description 查询多条数据
 // @Accept json
 // @Produce json
-// @Param current query int false "分页索引" default(1)
-// @Param page_size query int false "分页大小" default(10)
-// @Param pagination query bool false "是否分页" default(true)
+// @Param current query int true "分页索引" default(1)
+// @Param page_size query int true "分页大小" default(10)
 // @Param user_name query string false "用户名称"
-// @Success 200 {object} schema.SuccessResult{data=schema.UserQueryResult} "{status:"OK", data:响应数据}"
+// @Success 200 {object} schema.UserQueryResult "{staus:"OK", data:响应数据}"
 // @Failure 400 {object} schema.ErrorItem "{code:400, status:"OK", message:"请求参数错误"}"
 // @Failure 404 {object} schema.ErrorItem "{code:404, status:"OK", message:"资源不存在"}"
 // @Router /api/users [get]
@@ -123,21 +124,6 @@ func (a *User) Get(c *gin.Context) {
 	}
 
 	ginx.ResItem(c, user)
-}
-
-// MockGet 查询单条数据
-// @Tags Users 用户
-// @Summary 查询数据
-// @Description 查询数据
-// @Accept json
-// @Produce json
-// @Param id path string true "用户ID"
-// @Success 200 {object} schema.User "{staus:"OK", data:响应数据}"
-// @Failure 400 {object} schema.ErrorItem "{code:400, status:"OK", message:"请求参数错误"}"
-// @Failure 404 {object} schema.ErrorItem "{code:404, status:"OK", message:"资源不存在"}"
-// @Router /api/users/:id/detail [get]
-func MockGet() {
-
 }
 
 // Start 查询单条数据

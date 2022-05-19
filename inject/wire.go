@@ -5,7 +5,6 @@ package inject
 
 import (
 	"gin-essential/logger"
-	"gin-essential/repo"
 	"gin-essential/repo/dao"
 	"gin-essential/router"
 	"gin-essential/router/api"
@@ -18,10 +17,10 @@ import (
 func GenInjector() (*Injector, func(), error) {
 	wire.Build(
 		dao.InitPgDB,
-		repo.ModelSet,
+		dao.ModelSet,
+		router.RouterSet,
 		srv.SrvSet,
 		api.APISet,
-		router.RouterSet,
 		logger.LoggerSet,
 		router.GinSet,
 		InjectorSet,

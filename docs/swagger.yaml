@@ -24,15 +24,6 @@ definitions:
       status:
         type: string
     type: object
-  schema.SuccessResult:
-    properties:
-      data:
-        description: 返回数据
-        type: object
-      status:
-        description: '"OK"'
-        type: string
-    type: object
   schema.User:
     properties:
       email:
@@ -73,17 +64,14 @@ paths:
         description: 分页索引
         in: query
         name: current
+        required: true
         type: integer
       - default: 10
         description: 分页大小
         in: query
         name: page_size
+        required: true
         type: integer
-      - default: true
-        description: 是否分页
-        in: query
-        name: pagination
-        type: boolean
       - description: 用户名称
         in: query
         name: user_name
@@ -92,14 +80,9 @@ paths:
       - application/json
       responses:
         "200":
-          description: '{status:"OK", data:响应数据}'
+          description: '{staus:"OK", data:响应数据}'
           schema:
-            allOf:
-            - $ref: '#/definitions/schema.SuccessResult'
-            - properties:
-                data:
-                  $ref: '#/definitions/schema.UserQueryResult'
-              type: object
+            $ref: '#/definitions/schema.UserQueryResult'
         "400":
           description: '{code:400, status:"OK", message:"请求参数错误"}'
           schema:
