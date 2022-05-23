@@ -1,6 +1,6 @@
 *test*
 *.out
 .env
-cmd/*
+cmd/**/*
 server
 .vscode
