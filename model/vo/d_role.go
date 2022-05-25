@@ -1,4 +1,4 @@
-package do
+package vo
 
 // Role 角色
 type Role struct {

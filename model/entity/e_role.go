@@ -2,7 +2,7 @@ package entity
 
 import (
 	"context"
-	"gin-essential/model/do"
+	"gin-essential/model/vo"
 	"gin-essential/shared/id"
 
 	"gorm.io/gorm"
@@ -16,7 +16,7 @@ func GetRoleDB(ctx context.Context, defDB *gorm.DB) *gorm.DB {
 // Role 角色
 type Role struct {
 	gorm.Model
-	do.Role
+	vo.Role
 	RoleID id.RoleID `json:"role_id" gorm:"column:role_id;comment:角色ID"`
 }
 

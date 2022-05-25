@@ -20,6 +20,11 @@ const (
 	ReqBodyKey = "/req-body"
 	// ResBodyKey 响应body
 	ResBodyKey = "/res-body"
+
+	// header
+	authorization = "Authorization"
+	jwtPrefix     = "Bearer "
+	contentType   = "application/json; charset=utf-8"
 )
 
 // ParseJSON 解析请求JSON
@@ -146,7 +151,7 @@ func resJSON(c *gin.Context, status int, v interface{}) {
 		panic(err)
 	}
 	c.Set(ResBodyKey, buf)
-	c.Data(status, "application/json; charset=utf-8", buf)
+	c.Data(status, contentType, buf)
 	c.Abort()
 }
 
@@ -163,10 +168,9 @@ func GetBody(c *gin.Context) []byte {
 // GetToken 获取token
 func GetToken(c *gin.Context) string {
 	var token string
-	token = c.GetHeader("Authorization")
-	prefix := "Bearer "
-	if strings.HasPrefix(token, prefix) {
-		token = token[len(prefix):]
+	token = c.GetHeader(authorization)
+	if strings.HasPrefix(token, jwtPrefix) {
+		token = token[len(jwtPrefix):]
 	}
 	return token
 }

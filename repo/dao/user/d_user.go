@@ -2,7 +2,6 @@ package userdao
 
 import (
 	"context"
-	"gin-essential/model/do"
 	"gin-essential/model/entity"
 	"gin-essential/pkg/errors"
 	"gin-essential/repo/dao"
@@ -85,7 +84,7 @@ func (a *User) Update(ctx context.Context, userID string, user schema.User) erro
 
 // Delete 删除
 func (a *User) Delete(ctx context.Context, userID string) error {
-	db := entity.GetUserDB(ctx, a.PgDB).Where("user_id = ?", userID).Delete(&do.User{})
+	db := entity.GetUserDB(ctx, a.PgDB).Where("user_id = ?", userID).Delete(&entity.User{})
 	if err := db.Error; err != nil {
 		return err
 	}

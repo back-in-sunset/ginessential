@@ -2,7 +2,7 @@ package entity
 
 import (
 	"context"
-	"gin-essential/model/do"
+	"gin-essential/model/vo"
 	"gin-essential/shared/id"
 
 	"gorm.io/gorm"
@@ -26,7 +26,7 @@ const (
 // User 用户
 type User struct {
 	gorm.Model
-	do.User
+	vo.User
 	UserID id.UserID  `json:"user_id" gorm:"column:user_id;type:varchar(36);index;not null;"`
 	Status UserStauts `json:"-" db:"status" gorm:"column:status;index;default:1;not null;"` // 状态(1:启用 2:停用)
 }

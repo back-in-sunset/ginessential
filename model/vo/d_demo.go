@@ -1,4 +1,4 @@
-package do
+package vo
 
 // Demo 用户
 type Demo struct {

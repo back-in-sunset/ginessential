@@ -1,4 +1,4 @@
-package do
+package vo
 
 // User ..
 type User struct {

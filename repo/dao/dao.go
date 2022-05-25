@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	contextx "gin-essential/ctx"
-	"gin-essential/model/do"
+	"gin-essential/model/entity"
 	"gin-essential/schema"
 	"log"
 	"os"
@@ -46,18 +46,18 @@ func InitPgDB() *gorm.DB {
 
 	sqlDB, _ := pgDB.DB()
 	// SetMaxIdleConns 设置空闲连接池中连接的最大数量
-	sqlDB.SetMaxIdleConns(80)
+	sqlDB.SetMaxIdleConns(63)
 	// SetMaxOpenConns 设置打开数据库连接的最大数量。
 	sqlDB.SetMaxOpenConns(100)
 	// SetConnMaxLifetime 设置了连接可复用的最大时间。
-	sqlDB.SetConnMaxLifetime(time.Hour)
+	sqlDB.SetConnMaxLifetime(10 * time.Minute)
 
 	if os.Getenv("GOENV") == "dev" {
 		log.Println("[INFO]> DB Starting.... IN Debug Mode ")
 		pgDB.Debug()
 	}
 
-	pgDB.AutoMigrate(&do.User{}, &do.Demo{})
+	pgDB.AutoMigrate(&entity.User{}, &entity.Demo{})
 	return pgDB
 }
 

@@ -1,7 +1,7 @@
 package schema
 
 import (
-	"gin-essential/model/do"
+	"gin-essential/model/vo"
 	"gin-essential/pkg/errors"
 	"gin-essential/pkg/stringx"
 	"gin-essential/shared/id"
@@ -10,7 +10,7 @@ import (
 // User 用户
 type User struct {
 	UserID id.UserID `json:"user_id" gorm:"column:user_id"` // 用户ID
-	do.User
+	vo.User
 }
 
 // Users 用户列表

@@ -144,6 +144,12 @@
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "jwt",
+                        "name": "authorization",
+                        "in": "header"
                     }
                 ],
                 "responses": {
