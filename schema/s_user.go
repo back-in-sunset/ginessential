@@ -1,15 +1,16 @@
 package schema
 
 import (
-	"gin-essential/model/entity"
+	"gin-essential/model/do"
 	"gin-essential/pkg/errors"
-	"gin-essential/pkg/util/random"
+	"gin-essential/pkg/stringx"
+	"gin-essential/shared/id"
 )
 
 // User 用户
 type User struct {
-	UserID int `json:"user_id" gorm:"column:id"` // 用户ID
-	entity.UserEntity
+	UserID id.UserID `json:"user_id" gorm:"column:user_id"` // 用户ID
+	do.User
 }
 
 // Users 用户列表
@@ -31,15 +32,19 @@ type UserQueryResult struct {
 // Validate  数据验证
 func (a *User) Validate() error {
 	if len(a.Telephone) != 11 {
-		return errors.New400Response("手机号格式不对")
+		return errors.New500Response("手机号格式不对")
 	}
 
 	if len(a.Password) < 6 {
 		return errors.New400Response("密码少于6位")
 	}
 
-	if len(a.Name) == 0 {
-		a.Name = random.RandomString(10)
-	}
 	return nil
+}
+
+// FillDefault 填充默认参数
+func (a *User) FillDefault() {
+	if len(a.Name) == 0 {
+		a.Name = stringx.Rand()
+	}
 }

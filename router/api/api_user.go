@@ -3,11 +3,11 @@ package api
 import (
 	"gin-essential/ginx"
 	"gin-essential/schema"
-	"gin-essential/srv"
 
 	"gin-essential/pkg/errors"
 	jwtauth "gin-essential/pkg/jwt"
-	"gin-essential/pkg/util/strconvx"
+
+	usersrv "gin-essential/srv/user"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
@@ -18,7 +18,7 @@ var UserSet = wire.NewSet(wire.Struct(new(User), "*"))
 
 // User 用户
 type User struct {
-	UserSrv srv.User
+	UserSrv usersrv.User
 }
 
 // Register 注册
@@ -28,40 +28,39 @@ type User struct {
 // @Accept json
 // @Produce json
 // @Param body body schema.User true "用户"
-// @Success 200 {object} schema.UserQueryResult "{staus:"OK", data:响应数据}"
+// @Success 200 {object} schema.StatusResult "{staus:"OK", data:响应数据}"
 // @Failure 400 {object} schema.ErrorItem "{code:400, status:"OK", message:"请求参数错误"}"
 // @Failure 404 {object} schema.ErrorItem "{code:404, status:"OK", message:"资源不存在"}"
 // @Router /api/users [post]
 func (a *User) Register(c *gin.Context) {
 	ctx := c.Request.Context()
 	// 获取参数
-	var params schema.User
-	ginx.ParseJSON(c, &params)
-	err := params.Validate()
+	var user schema.User
+	err := ginx.ParseJSON(c, &user)
 	if err != nil {
 		ginx.ResError(c, err)
 		return
 	}
 
 	// 判断手机号
-	if a.UserSrv.IsTelePhoneExist(ctx, params.Telephone) {
+	if a.UserSrv.IsTelePhoneExist(ctx, user.Telephone) {
 		ginx.ResError(c, errors.ErrPhoneRegistered)
 		return
 	}
 
-	dkpassword, err := jwtauth.Scrypt(params.Password, jwtauth.Salt)
+	dkpassword, err := jwtauth.Scrypt(user.Password, jwtauth.Salt)
 	if err != nil {
 		ginx.ResError(c, errors.New400Response("注册失败"))
 		return
 	}
 	// 创建用户
-	params.Password = dkpassword
-	err = a.UserSrv.Register(ctx, params)
+	user.Password = dkpassword
+	err = a.UserSrv.Register(ctx, user)
 	if err != nil {
-		panic(err)
+		ginx.ResError(c, err)
+		return
 	}
 	ginx.ResOK(c)
-
 }
 
 // NatsMessage ..
@@ -69,16 +68,20 @@ func (a *User) NatsMessage(c *gin.Context) {
 	ginx.ResError(c, errors.New400Response("注册失败"))
 }
 
-// Query 查询数据
+// DocInt .
+type DocInt int
+
+// Query 查询多条数据
 // @Tags Users 用户
-// @Summary 查询数据
-// @Description 查询数据
+// @Summary 查询多条数据
+// @Description 查询多条数据
 // @Accept json
 // @Produce json
-// @Param current query int true "分页索引" default(1)
-// @Param page_size query int true "分页大小" default(10)
+// @Param current query int false "分页索引" default(1)
+// @Param page_size query int false "分页大小" default(10)
+// @Param pagination query bool false "是否分页" default(true)
 // @Param user_name query string false "用户名称"
-// @Success 200 {object} schema.UserQueryResult "{staus:"OK", data:响应数据}"
+// @Success 200 {object} schema.SuccessResult{data=schema.UserQueryResult} "{status:"OK", data:响应数据}"
 // @Failure 400 {object} schema.ErrorItem "{code:400, status:"OK", message:"请求参数错误"}"
 // @Failure 404 {object} schema.ErrorItem "{code:404, status:"OK", message:"资源不存在"}"
 // @Router /api/users [get]
@@ -104,13 +107,13 @@ func (a *User) Query(c *gin.Context) {
 // @Description 查询数据
 // @Accept json
 // @Produce json
-// @Param id path int true "用户ID"
-// @Success 200 {object} schema.UserQueryResult "{staus:"OK", data:响应数据}"
+// @Param id path string true "用户ID"
+// @Success 200 {object} schema.User "{staus:"OK", data:响应数据}"
 // @Failure 400 {object} schema.ErrorItem "{code:400, status:"OK", message:"请求参数错误"}"
 // @Failure 404 {object} schema.ErrorItem "{code:404, status:"OK", message:"资源不存在"}"
 // @Router /api/users/{id} [get]
 func (a *User) Get(c *gin.Context) {
-	user, err := a.UserSrv.Get(c.Request.Context(), strconvx.S(c.Param("id")).ToInt())
+	user, err := a.UserSrv.Get(c.Request.Context(), c.Param("id"))
 	if err != nil {
 		ginx.ResError(c, err)
 		return
@@ -122,19 +125,24 @@ func (a *User) Get(c *gin.Context) {
 	ginx.ResItem(c, user)
 }
 
-// Start 查询单条数据
+// MockGet 查询单条数据
 // @Tags Users 用户
 // @Summary 查询数据
 // @Description 查询数据
 // @Accept json
 // @Produce json
-// @Param id path int true "用户ID"
-// @Success 200 {object} schema.UserQueryResult "{staus:"OK", data:响应数据}"
+// @Param id path string true "用户ID"
+// @Success 200 {object} schema.User "{staus:"OK", data:响应数据}"
 // @Failure 400 {object} schema.ErrorItem "{code:400, status:"OK", message:"请求参数错误"}"
 // @Failure 404 {object} schema.ErrorItem "{code:404, status:"OK", message:"资源不存在"}"
-// @Router /api/users/{id}/start [get]
+// @Router /api/users/:id/detail [get]
+func MockGet() {
+
+}
+
+// Start 查询单条数据
 func (a *User) Start(c *gin.Context) {
-	user, err := a.UserSrv.Get(c.Request.Context(), strconvx.S(c.Param("id")).ToInt())
+	user, err := a.UserSrv.Get(c.Request.Context(), c.Param("id"))
 	if err != nil {
 		ginx.ResError(c, err)
 		return

@@ -1,9 +1,12 @@
-package srv
+package usersrv
 
 import (
 	"context"
-	"gin-essential/dao"
+	"gin-essential/pkg/utils"
+	"gin-essential/repo/dao"
+	userdao "gin-essential/repo/dao/user"
 	"gin-essential/schema"
+	"gin-essential/shared/id"
 
 	"github.com/google/wire"
 )
@@ -13,8 +16,9 @@ var UserSet = wire.NewSet(wire.Struct(new(User), "*"))
 
 // User ..
 type User struct {
-	UserDB *dao.User
+	UserDB *userdao.User
 	// UserChDB *dao.UserChDB
+	Trans *dao.Trans
 }
 
 // IsTelePhoneExist 检查手机号是否存在
@@ -32,7 +36,15 @@ func (a *User) IsTelePhoneExist(ctx context.Context, telephone string) bool {
 
 // Register 用户注册
 func (a *User) Register(ctx context.Context, user schema.User) error {
-	return a.UserDB.Create(ctx, user)
+	return a.Trans.Exec(ctx, func(ctx context.Context) error {
+		user.UserID = id.ObjID(utils.MustUUID()).ToUserID()
+		err := a.UserDB.Create(ctx, user)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+
 }
 
 // QueryPage 查询分页数据
@@ -41,16 +53,16 @@ func (a *User) QueryPage(ctx context.Context, params schema.UserQueryParams) (*s
 }
 
 // Get 查询单条数据
-func (a *User) Get(ctx context.Context, userID int) (*schema.User, error) {
+func (a *User) Get(ctx context.Context, userID string) (*schema.User, error) {
 	return a.UserDB.Get(ctx, userID)
 }
 
 // Update 更新用户数据
-func (a *User) Update(ctx context.Context, userID int, user schema.User) error {
+func (a *User) Update(ctx context.Context, userID string, user schema.User) error {
 	return a.UserDB.Update(ctx, userID, user)
 }
 
 // Delete 删除数据
-func (a *User) Delete(ctx context.Context, userID int) error {
+func (a *User) Delete(ctx context.Context, userID string) error {
 	return a.UserDB.Delete(ctx, userID)
 }

@@ -3,6 +3,7 @@ package ginx
 import (
 	"encoding/json"
 	"fmt"
+	contextx "gin-essential/ctx"
 	"gin-essential/logger"
 	"gin-essential/pkg/errors"
 	"gin-essential/schema"
@@ -11,6 +12,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
+	"gopkg.in/validator.v2"
 )
 
 const (
@@ -18,8 +20,6 @@ const (
 	ReqBodyKey = "/req-body"
 	// ResBodyKey 响应body
 	ResBodyKey = "/res-body"
-	// LoggerReqBodyKey 请求body
-	LoggerReqBodyKey = "/logger-req-body"
 )
 
 // ParseJSON 解析请求JSON
@@ -27,6 +27,10 @@ func ParseJSON(c *gin.Context, obj interface{}) error {
 	if err := c.ShouldBindJSON(obj); err != nil {
 		return errors.Wrap400Response(err, fmt.Sprintf("解析请求参数发生错误 - %s", err.Error()))
 	}
+	if err := validator.Validate(obj); err != nil {
+		return errors.Wrap400Response(err, fmt.Sprintf("参数校验不通过 - %s", err.Error()))
+	}
+
 	return nil
 }
 
@@ -118,7 +122,12 @@ func ResError(c *gin.Context, err error, status ...int) {
 	if code := res.Code; code >= 400 && code < 500 {
 		logger.Warn(fmt.Sprintf("%+v", err))
 	} else if code >= 500 {
-		logger.Error(fmt.Sprintf("%+v", err))
+		traceID, ok := contextx.FromTraceID(c.Request.Context())
+		if ok {
+			logger.Error(fmt.Sprintf("[%s] %+v", traceID, err))
+		} else {
+			logger.Error(fmt.Sprintf("%+v", err))
+		}
 	}
 
 	eitem := schema.ErrorItem{

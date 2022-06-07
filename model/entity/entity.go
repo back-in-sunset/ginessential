@@ -2,11 +2,16 @@ package entity
 
 import (
 	"context"
+
 	contextx "gin-essential/ctx"
+	"gin-essential/shared/id"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
 )
+
+// ObjID ..
+type ObjID id.ObjID
 
 func getDB(ctx context.Context, defDB *gorm.DB) *gorm.DB {
 	trans, ok := contextx.FromTrans(ctx)

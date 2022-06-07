@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"encoding/json"
 	"fmt"
 	"gin-essential/ginx"
 	"gin-essential/logger"
@@ -47,6 +48,7 @@ func ZapLogger(skippers ...SkipperFunc) gin.HandlerFunc {
 
 		timeConsuming := time.Since(start).Nanoseconds() / 1e6
 		status := c.Writer.Status()
+
 		fields["res_status"] = status
 		fields["res_length"] = c.Writer.Size()
 
@@ -55,10 +57,29 @@ func ZapLogger(skippers ...SkipperFunc) gin.HandlerFunc {
 				fields["res_body"] = string(b)
 			}
 		}
+
+		headerBs, _ := json.Marshal(fields)
+		LogStr := fmt.Sprintf("[http] %s %s %s status:%d(%dms)", p, c.Request.Method, c.ClientIP(), c.Writer.Status(), timeConsuming)
+		// INFO
 		if status == http.StatusOK {
-			logger.Logger.Sugar().Info(
-				fmt.Sprintf("[http] %s %s %s status:%d(%dms)", p, c.Request.Method, c.ClientIP(), c.Writer.Status(), timeConsuming),
-				fields,
+			logger.SugarLogger.Info(
+				LogStr,
+				string(headerBs),
+			)
+		}
+		// WARN
+		if status >= http.StatusBadRequest && status < http.StatusInternalServerError {
+			logger.SugarLogger.Warn(
+				LogStr,
+				string(headerBs),
+			)
+		}
+
+		// ERROR
+		if status >= http.StatusInternalServerError {
+			logger.SugarLogger.Error(
+				LogStr,
+				string(headerBs),
 			)
 		}
 

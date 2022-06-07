@@ -2,7 +2,7 @@ package middleware
 
 import (
 	contextx "gin-essential/ctx"
-	"gin-essential/pkg/util/trace"
+	"gin-essential/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,7 +17,7 @@ func TraceMiddleware(skippers ...SkipperFunc) gin.HandlerFunc {
 
 		traceID := c.GetHeader("X-Request-Id")
 		if traceID == "" {
-			traceID = trace.NewTraceID()
+			traceID = utils.NewTraceID()
 		}
 
 		ctx := contextx.NewTraceID(c.Request.Context(), traceID)

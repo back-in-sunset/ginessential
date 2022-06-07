@@ -19,6 +19,20 @@ definitions:
       total:
         type: integer
     type: object
+  schema.StatusResult:
+    properties:
+      status:
+        type: string
+    type: object
+  schema.SuccessResult:
+    properties:
+      data:
+        description: 返回数据
+        type: object
+      status:
+        description: '"OK"'
+        type: string
+    type: object
   schema.User:
     properties:
       email:
@@ -30,13 +44,11 @@ definitions:
       password:
         description: 密码
         type: string
-      status:
-        description: 状态(1:启用 2:停用)
-        type: integer
       telephone:
         description: 手机号
         type: string
       user_id:
+        description: 用户ID
         type: string
     type: object
   schema.UserQueryResult:
@@ -55,20 +67,23 @@ paths:
     get:
       consumes:
       - application/json
-      description: 查询数据
+      description: 查询多条数据
       parameters:
       - default: 1
         description: 分页索引
         in: query
         name: current
-        required: true
         type: integer
       - default: 10
         description: 分页大小
         in: query
         name: page_size
-        required: true
         type: integer
+      - default: true
+        description: 是否分页
+        in: query
+        name: pagination
+        type: boolean
       - description: 用户名称
         in: query
         name: user_name
@@ -77,9 +92,14 @@ paths:
       - application/json
       responses:
         "200":
-          description: '{staus:"OK", data:响应数据}'
+          description: '{status:"OK", data:响应数据}'
           schema:
-            $ref: '#/definitions/schema.UserQueryResult'
+            allOf:
+            - $ref: '#/definitions/schema.SuccessResult'
+            - properties:
+                data:
+                  $ref: '#/definitions/schema.UserQueryResult'
+              type: object
         "400":
           description: '{code:400, status:"OK", message:"请求参数错误"}'
           schema:
@@ -88,7 +108,7 @@ paths:
           description: '{code:404, status:"OK", message:"资源不存在"}'
           schema:
             $ref: '#/definitions/schema.ErrorItem'
-      summary: 查询数据
+      summary: 查询多条数据
       tags:
       - Users 用户
     post:
@@ -108,7 +128,7 @@ paths:
         "200":
           description: '{staus:"OK", data:响应数据}'
           schema:
-            $ref: '#/definitions/schema.UserQueryResult'
+            $ref: '#/definitions/schema.StatusResult'
         "400":
           description: '{code:400, status:"OK", message:"请求参数错误"}'
           schema:
@@ -130,43 +150,14 @@ paths:
         in: path
         name: id
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: '{staus:"OK", data:响应数据}'
           schema:
-            $ref: '#/definitions/schema.UserQueryResult'
-        "400":
-          description: '{code:400, status:"OK", message:"请求参数错误"}'
-          schema:
-            $ref: '#/definitions/schema.ErrorItem'
-        "404":
-          description: '{code:404, status:"OK", message:"资源不存在"}'
-          schema:
-            $ref: '#/definitions/schema.ErrorItem'
-      summary: 查询数据
-      tags:
-      - Users 用户
-  /api/users/{id}/start:
-    get:
-      consumes:
-      - application/json
-      description: 查询数据
-      parameters:
-      - description: 用户ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{staus:"OK", data:响应数据}'
-          schema:
-            $ref: '#/definitions/schema.UserQueryResult'
+            $ref: '#/definitions/schema.User'
         "400":
           description: '{code:400, status:"OK", message:"请求参数错误"}'
           schema:

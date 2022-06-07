@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -29,19 +30,6 @@ func Cors() gin.HandlerFunc {
 	}
 }
 
-// JWT jwt
-// func JWT() gin.HandlerFunc {
-// 	return func(c *gin.Context) {
-// 		var (
-// 			code int
-// 			data interface{}
-// 		)
-// 		code = e.SUCCESS
-
-// 		c.Next()
-// 	}
-// }
-
 // SkipHandler 忽略handler
 func SkipHandler(c *gin.Context, skipperFuncs ...SkipperFunc) bool {
 	for _, skipperFunc := range skipperFuncs {
@@ -50,4 +38,25 @@ func SkipHandler(c *gin.Context, skipperFuncs ...SkipperFunc) bool {
 		}
 	}
 	return false
+}
+
+// AllowPathPrefixSkipper skip prefix router
+func AllowPathPrefixSkipper(prefixes ...string) SkipperFunc {
+	return func(c *gin.Context) bool {
+		path := c.Request.URL.Path
+		pathLen := len(path)
+
+		for _, p := range prefixes {
+			if rl := len(p); rl > 0 {
+				if p[0] != '/' {
+					p = strings.Join([]string{"/", p}, "")
+				}
+			}
+
+			if pl := len(p); pathLen >= pl && path[:pl] == p {
+				return true
+			}
+		}
+		return false
+	}
 }
