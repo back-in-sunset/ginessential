@@ -1,11 +1,11 @@
 package ginx
 
 import (
-	"encoding/json"
 	"fmt"
 	contextx "gin-essential/ctx"
 	"gin-essential/logger"
 	"gin-essential/pkg/errors"
+	"gin-essential/pkg/jsonx"
 	"gin-essential/schema"
 	"net/http"
 	"strings"
@@ -146,7 +146,7 @@ func ResError(c *gin.Context, err error, status ...int) {
 
 // resJSON 响应JSON数据
 func resJSON(c *gin.Context, status int, v interface{}) {
-	buf, err := json.Marshal(v)
+	buf, err := jsonx.Marshal(v)
 	if err != nil {
 		panic(err)
 	}

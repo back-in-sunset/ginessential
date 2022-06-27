@@ -115,6 +115,7 @@ func (a *User) Query(c *gin.Context) {
 // @Failure 404 {object} schema.ErrorItem "{code:404, status:"OK", message:"资源不存在"}"
 // @Router /api/users/{id} [get]
 func (a *User) Get(c *gin.Context) {
+	fmt.Println("-------------------")
 	user, err := a.UserSrv.Get(c.Request.Context(), c.Param("id"))
 	if err != nil {
 		ginx.ResError(c, err)
@@ -124,7 +125,6 @@ func (a *User) Get(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(ginx.GetToken(c))
 	ginx.ResItem(c, user)
 }
 

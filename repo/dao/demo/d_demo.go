@@ -2,8 +2,8 @@ package demodao
 
 import (
 	"context"
-	"gin-essential/model/do"
 	"gin-essential/model/entity"
+	"gin-essential/model/vo"
 	"gin-essential/pkg/errors"
 	"gin-essential/repo/dao"
 	"gin-essential/schema"
@@ -81,7 +81,7 @@ func (a *Demo) Update(ctx context.Context, userID int, user schema.Demo) error {
 
 // Delete 删除
 func (a *Demo) Delete(ctx context.Context, demoID int) error {
-	db := entity.GetDemoDB(ctx, a.PgDB).Where("demo_id = ?", demoID).Delete(do.Demo{})
+	db := entity.GetDemoDB(ctx, a.PgDB).Where("demo_id = ?", demoID).Delete(vo.Demo{})
 	if err := db.Error; err != nil {
 		return err
 	}

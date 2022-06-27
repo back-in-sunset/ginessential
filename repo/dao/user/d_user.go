@@ -3,7 +3,6 @@ package userdao
 import (
 	"context"
 	"gin-essential/model/entity"
-	"gin-essential/pkg/errors"
 	"gin-essential/repo/dao"
 	"gin-essential/schema"
 
@@ -61,11 +60,9 @@ func (a *User) Get(ctx context.Context, userID string) (*schema.User, error) {
 	db := entity.GetUserDB(ctx, a.PgDB).Where("user_id = ?", userID)
 
 	var user schema.User
-	ok, err := dao.FindOne(ctx, db, &user)
+	_, err := dao.FindOne(ctx, db, &user)
 	if err != nil {
 		return nil, err
-	} else if !ok {
-		return nil, errors.New500Response("new error")
 	}
 
 	return &user, nil

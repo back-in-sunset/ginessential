@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"gin-essential/inject"
+	"gin-essential/repo/dao"
 	"net/http"
 	"os"
 	"os/signal"
@@ -10,18 +11,36 @@ import (
 	"time"
 )
 
+const (
+	httpAddr = ":8080"
+)
+
+// HTTPConfig http config
+type HTTPConfig struct {
+	Addr string `toml:"addr"`
+}
+
 type options struct {
-	ConfigFile string
+	httpConfig *HTTPConfig
 }
 
 // Option 定义配置项
 type Option func(*options)
 
-// SetConfigFile 设定配置文件
-func SetConfigFile(s string) Option {
+// HTTPConfigOpt 设定配置文件
+func HTTPConfigOpt(c *HTTPConfig) Option {
 	return func(o *options) {
-		o.ConfigFile = s
+		o.httpConfig = c
 	}
+}
+
+// NewHTTPConfig ..
+func NewHTTPConfig() *HTTPConfig {
+	c := &HTTPConfig{
+		Addr: httpAddr,
+	}
+
+	return c
 }
 
 func main() {
@@ -33,7 +52,7 @@ func Run(ctx context.Context) error {
 	state := 1
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
-	cleanFunc := Init(ctx)
+	cleanFunc := Init(ctx, HTTPConfigOpt(NewHTTPConfig()))
 
 EXIT:
 	for {
@@ -67,7 +86,7 @@ func Init(ctx context.Context, opts ...Option) func() {
 		panic(err)
 	}
 	srv := &http.Server{
-		Addr:         ":8080",
+		Addr:         o.httpConfig.Addr,
 		Handler:      injector.Engine,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
@@ -77,4 +96,15 @@ func Init(ctx context.Context, opts ...Option) func() {
 	go srv.ListenAndServe()
 
 	return injectorCleanFunc
+}
+
+// Config 配置文件
+type Config struct {
+	Addr     string
+	Postgres dao.Postgres
+}
+
+// initConfig
+func initConfig() {
+
 }

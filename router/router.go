@@ -61,11 +61,12 @@ func (a *Router) RegisteAPI(app *gin.Engine) http.Handler {
 
 	app.GET("heart_beat", heartHandler)
 
-	auth := app.Group("api/auth")
+	api := app.Group("api")
+	auth := api.Group("/auth")
 	{
 		auth.GET("msg", a.UserAPI.NatsMessage)
 	}
-	users := app.Group("api/users")
+	users := api.Group("/users")
 	{
 		users.GET("", a.UserAPI.Query)
 		users.POST("", a.UserAPI.Register)
