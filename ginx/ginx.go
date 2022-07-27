@@ -22,9 +22,9 @@ const (
 	ResBodyKey = "/res-body"
 
 	// header
-	authorization = "Authorization"
-	jwtPrefix     = "Bearer "
-	contentType   = "application/json; charset=utf-8"
+	authorization   = "Authorization"
+	jwtPrefix       = "Bearer "
+	jsonContentType = "application/json; charset=utf-8"
 )
 
 // ParseJSON 解析请求JSON
@@ -52,6 +52,10 @@ func ParseForm(c *gin.Context, obj interface{}) error {
 	if err := c.ShouldBindWith(obj, binding.Form); err != nil {
 		return errors.Wrap400Response(err, fmt.Sprintf("解析请求参数发生错误 - %s", err.Error()))
 	}
+	if err := validator.Validate(obj); err != nil {
+		return errors.Wrap400Response(err, fmt.Sprintf("参数校验不通过 - %s", err.Error()))
+	}
+
 	return nil
 }
 
@@ -151,7 +155,7 @@ func resJSON(c *gin.Context, status int, v interface{}) {
 		panic(err)
 	}
 	c.Set(ResBodyKey, buf)
-	c.Data(status, contentType, buf)
+	c.Data(status, jsonContentType, buf)
 	c.Abort()
 }
 

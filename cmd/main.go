@@ -2,17 +2,22 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"gin-essential/inject"
 	"gin-essential/repo/dao"
+	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/BurntSushi/toml"
 )
 
 const (
-	httpAddr = ":8080"
+	httpAddr   = ":8080"
+	configPath = "configs/config.toml"
 )
 
 // HTTPConfig http config
@@ -100,11 +105,23 @@ func Init(ctx context.Context, opts ...Option) func() {
 
 // Config 配置文件
 type Config struct {
-	Addr     string
+	HTTPAddr string
 	Postgres dao.Postgres
 }
 
-// initConfig
-func initConfig() {
+var config Config = Config{
+	HTTPAddr: httpAddr,
+}
 
+// initConfig
+func initConfig(path string) {
+	_, err := toml.DecodeFile(path, &config)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Printf("%+v", config)
+}
+
+func init() {
+	initConfig(configPath)
 }

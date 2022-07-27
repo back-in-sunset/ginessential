@@ -1,8 +1,11 @@
+[HTTP]
+HTTPAddr = ":80"
+
 [Postgres]
 # 连接地址
-Host = "localhost"
+Host = "10.13.16.212"
 # 连接端口
-Port= 5555
+Port= 5432
 # 用户名
 User = "postgres"
 # 密码

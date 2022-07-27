@@ -13,6 +13,9 @@ import (
 
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
+
+	"github.com/openzipkin/zipkin-go"
+	zipkinhttp "github.com/openzipkin/zipkin-go/middleware/http"
 )
 
 // RouterSet 注入router
@@ -57,6 +60,9 @@ func (a *Router) RegisteAPI(app *gin.Engine) http.Handler {
 		middleware.TraceMiddleware(),
 		middleware.CopyBodyMiddleware(),
 		middleware.ZapLogger(middleware.AllowPathPrefixSkipper("swagger", "heart_beat")),
+		middleware.Zipkin(func() (*zipkinhttp.Client, *zipkin.Tracer) {
+			return middleware.NewZipKin("demo-zipkin", "10.13.16.212:9411")
+		}()),
 	)
 
 	app.GET("heart_beat", heartHandler)
