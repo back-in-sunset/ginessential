@@ -1,63 +1,72 @@
 package jwt
 
 import (
-	"errors"
+	"crypto/rsa"
+	"fmt"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v4"
 )
 
-var jwtSecretDefault = []byte(`key`)
-
-// Claims jwt-claims
-type Claims struct {
-	UserName string `json:"user_name"`
-	UserID   string `json:"user_id"`
-	jwt.StandardClaims
+// JWT ..
+type JWT struct {
+	privateKey *rsa.PrivateKey
+	publicKey  *rsa.PublicKey
+	nowFn      func() time.Time
+	sub        string
 }
 
-// GenToken 生成token
-func GenToken(userName string, userID string) (string, error) {
-	nowTime := time.Now()
-	expireTime := nowTime.Add(24 * time.Hour)
-
-	claims := Claims{
-		UserName: userName,
-		UserID:   userID,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: expireTime.Unix(),
-			Issuer:    "gin",
-		},
+// TimeFnOption jwt time opthion
+func TimeFnOption(nowfn func() time.Time) OptFn {
+	return func(j *JWT) {
+		j.nowFn = nowfn
 	}
-
-	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	token, err := tokenClaims.SignedString(jwtSecretDefault)
-	return token, err
 }
 
-// ParseToken 解析token
-func ParseToken(token string) (*Claims, error) {
-	tokenClaims, err := jwt.ParseWithClaims(token, &Claims{}, func(t *jwt.Token) (interface{}, error) {
-		return jwtSecretDefault, nil
-	})
+// SubFnOption sub filed
+func SubFnOption(sub string) OptFn {
+	return func(j *JWT) {
+		j.sub = sub
+	}
+}
+
+// OptFn ..
+type OptFn func(j *JWT)
+
+// NewJWT ..
+func NewJWT(privateKey, publicKey []byte, ops ...OptFn) (*JWT, error) {
+	prikey, err := jwt.ParseRSAPrivateKeyFromPEM(privateKey)
 	if err != nil {
 		return nil, err
-	} else if tokenClaims == nil {
-		return nil, errors.New("tokenClaims is empty")
+	}
+	pubkey, err := jwt.ParseRSAPublicKeyFromPEM(publicKey)
+	if err != nil {
+		return nil, err
 	}
 
-	claims, ok := tokenClaims.Claims.(*Claims)
-	if !ok || !tokenClaims.Valid {
-		return nil, errors.New("tokenClaims.Claims is error")
+	j := &JWT{
+		privateKey: prikey,
+		publicKey:  pubkey,
 	}
-	return claims, nil
+	for _, op := range ops {
+		op(j)
+	}
+	return j, nil
 }
 
-// FreshToken 刷新token
-func FreshToken() {
-}
+// Create ..
+func (j *JWT) Create(content string, expDuration time.Duration) (string, error) {
+	claims := make(jwt.MapClaims)
+	now := j.nowFn()
+	claims["dat"] = content                     // Our custom data.
+	claims["exp"] = now.Add(expDuration).Unix() // The expiration time after which the token must be disregarded.
+	claims["iat"] = now.Unix()                  // The time at which the token was issued.
+	claims["sub"] = j.sub
 
-// DeleteToken 删除token
-func DeleteToken() {
+	token, err := jwt.NewWithClaims(jwt.SigningMethodRS256, claims).SignedString(j.privateKey)
+	if err != nil {
+		return "", fmt.Errorf("create: sign token: %w", err)
+	}
 
+	return token, nil
 }

@@ -1,11 +1,11 @@
 package ginx
 
 import (
-	"encoding/json"
 	"fmt"
 	contextx "gin-essential/ctx"
 	"gin-essential/logger"
 	"gin-essential/pkg/errors"
+	"gin-essential/pkg/jsonx"
 	"gin-essential/schema"
 	"net/http"
 	"strings"
@@ -20,6 +20,11 @@ const (
 	ReqBodyKey = "/req-body"
 	// ResBodyKey 响应body
 	ResBodyKey = "/res-body"
+
+	// header
+	authorization   = "Authorization"
+	jwtPrefix       = "Bearer "
+	jsonContentType = "application/json; charset=utf-8"
 )
 
 // ParseJSON 解析请求JSON
@@ -47,6 +52,10 @@ func ParseForm(c *gin.Context, obj interface{}) error {
 	if err := c.ShouldBindWith(obj, binding.Form); err != nil {
 		return errors.Wrap400Response(err, fmt.Sprintf("解析请求参数发生错误 - %s", err.Error()))
 	}
+	if err := validator.Validate(obj); err != nil {
+		return errors.Wrap400Response(err, fmt.Sprintf("参数校验不通过 - %s", err.Error()))
+	}
+
 	return nil
 }
 
@@ -141,12 +150,12 @@ func ResError(c *gin.Context, err error, status ...int) {
 
 // resJSON 响应JSON数据
 func resJSON(c *gin.Context, status int, v interface{}) {
-	buf, err := json.Marshal(v)
+	buf, err := jsonx.Marshal(v)
 	if err != nil {
 		panic(err)
 	}
 	c.Set(ResBodyKey, buf)
-	c.Data(status, "application/json; charset=utf-8", buf)
+	c.Data(status, jsonContentType, buf)
 	c.Abort()
 }
 
@@ -163,10 +172,9 @@ func GetBody(c *gin.Context) []byte {
 // GetToken 获取token
 func GetToken(c *gin.Context) string {
 	var token string
-	token = c.GetHeader("Authorization")
-	prefix := "Bearer "
-	if strings.HasPrefix(token, prefix) {
-		token = token[len(prefix):]
+	token = c.GetHeader(authorization)
+	if strings.HasPrefix(token, jwtPrefix) {
+		token = token[len(jwtPrefix):]
 	}
 	return token
 }

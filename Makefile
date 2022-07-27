@@ -1,8 +1,8 @@
 # SERVER=10.13.16.203
-SERVER=10.1.71.108
+SERVER=10.13.16.212
 SERVER_PATH=cmd
 LINUX_USER=jassery
-LINUX_APP_PATH=Server/server_new
+LINUX_APP_PATH=Server/ginessential/
 NOW = $(date '+%Y%m%d%I%M%S')
 
 include .env

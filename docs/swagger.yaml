@@ -151,6 +151,10 @@ paths:
         name: id
         required: true
         type: string
+      - description: jwt
+        in: header
+        name: authorization
+        type: string
       produces:
       - application/json
       responses:

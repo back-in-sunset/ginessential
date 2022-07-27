@@ -1,14 +1,14 @@
 package schema
 
 import (
-	"gin-essential/model/do"
+	"gin-essential/model/vo"
 	"gin-essential/shared/id"
 )
 
 // Demo 用户
 type Demo struct {
 	DemoID id.DemoID `json:"demo_id" gorm:"column:demo_id"` // ID
-	do.Demo
+	vo.Demo
 }
 
 // Demos 用户列表

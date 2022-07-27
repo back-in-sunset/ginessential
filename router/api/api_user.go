@@ -1,11 +1,12 @@
 package api
 
 import (
+	"fmt"
 	"gin-essential/ginx"
 	"gin-essential/schema"
 
 	"gin-essential/pkg/errors"
-	jwtauth "gin-essential/pkg/jwt"
+	"gin-essential/pkg/utils"
 
 	usersrv "gin-essential/srv/user"
 
@@ -48,7 +49,7 @@ func (a *User) Register(c *gin.Context) {
 		return
 	}
 
-	dkpassword, err := jwtauth.Scrypt(user.Password, jwtauth.Salt)
+	dkpassword, err := utils.Scrypt(user.Password, utils.Salt)
 	if err != nil {
 		ginx.ResError(c, errors.New400Response("注册失败"))
 		return
@@ -108,11 +109,13 @@ func (a *User) Query(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param id path string true "用户ID"
+// @Param authorization header string false "jwt"
 // @Success 200 {object} schema.User "{staus:"OK", data:响应数据}"
 // @Failure 400 {object} schema.ErrorItem "{code:400, status:"OK", message:"请求参数错误"}"
 // @Failure 404 {object} schema.ErrorItem "{code:404, status:"OK", message:"资源不存在"}"
 // @Router /api/users/{id} [get]
 func (a *User) Get(c *gin.Context) {
+	fmt.Println("-------------------")
 	user, err := a.UserSrv.Get(c.Request.Context(), c.Param("id"))
 	if err != nil {
 		ginx.ResError(c, err)

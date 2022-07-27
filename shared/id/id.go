@@ -32,6 +32,7 @@ func (d *DemoID) String() string {
 	if d == nil {
 		return ""
 	}
+
 	return string(*d)
 }
 
@@ -42,6 +43,7 @@ func (i *RoleID) String() string {
 	if i == nil {
 		return ""
 	}
+
 	return string(*i)
 }
 
@@ -52,5 +54,6 @@ func (i *UserID) String() string {
 	if i == nil {
 		return ""
 	}
+
 	return string(*i)
 }
