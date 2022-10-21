@@ -109,6 +109,7 @@ type Config struct {
 	Postgres dao.Postgres
 }
 
+// config
 var config Config = Config{
 	HTTPAddr: httpAddr,
 }

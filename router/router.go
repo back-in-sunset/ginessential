@@ -11,8 +11,8 @@ import (
 	// swagger
 	_ "gin-essential/docs"
 
+	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"github.com/swaggo/gin-swagger/swaggerFiles"
 
 	"github.com/openzipkin/zipkin-go"
 	zipkinhttp "github.com/openzipkin/zipkin-go/middleware/http"
@@ -107,7 +107,7 @@ func InitGinEngine(r IRouter) *gin.Engine {
 
 	// Router register
 	r.Registe(app)
-	app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	return app
 }

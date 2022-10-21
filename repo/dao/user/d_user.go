@@ -5,6 +5,7 @@ import (
 	"gin-essential/model/entity"
 	"gin-essential/repo/dao"
 	"gin-essential/schema"
+	"gin-essential/shared/id"
 
 	"github.com/google/wire"
 	"gorm.io/gorm"
@@ -56,7 +57,7 @@ func (a *User) Query(ctx context.Context, params schema.UserQueryParams) (*schem
 }
 
 // Get 获取单条数据
-func (a *User) Get(ctx context.Context, userID string) (*schema.User, error) {
+func (a *User) Get(ctx context.Context, userID id.UserID) (*schema.User, error) {
 	db := entity.GetUserDB(ctx, a.PgDB).Where("user_id = ?", userID)
 
 	var user schema.User
@@ -69,7 +70,7 @@ func (a *User) Get(ctx context.Context, userID string) (*schema.User, error) {
 }
 
 // Update 更新
-func (a *User) Update(ctx context.Context, userID string, user schema.User) error {
+func (a *User) Update(ctx context.Context, userID id.UserID, user schema.User) error {
 	db := entity.GetUserDB(ctx, a.PgDB)
 
 	db.Where("id = ?", userID).Updates(&user).Omit("user_id", "telephone", "email")
@@ -80,7 +81,7 @@ func (a *User) Update(ctx context.Context, userID string, user schema.User) erro
 }
 
 // Delete 删除
-func (a *User) Delete(ctx context.Context, userID string) error {
+func (a *User) Delete(ctx context.Context, userID id.UserID) error {
 	db := entity.GetUserDB(ctx, a.PgDB).Where("user_id = ?", userID).Delete(&entity.User{})
 	if err := db.Error; err != nil {
 		return err

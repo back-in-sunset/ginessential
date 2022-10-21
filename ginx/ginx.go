@@ -7,7 +7,10 @@ import (
 	"gin-essential/pkg/errors"
 	"gin-essential/pkg/jsonx"
 	"gin-essential/schema"
+	"gin-essential/shared/id"
 	"net/http"
+	"reflect"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -57,6 +60,47 @@ func ParseForm(c *gin.Context, obj interface{}) error {
 	}
 
 	return nil
+}
+
+// ParseID 解析ID id must be pointer
+func ParseID(c *gin.Context, key string, ider id.IDer) error {
+	pid := c.Param(key)
+	if pid == "" {
+		return errors.New400Response("param key is empty")
+	}
+
+	v := reflect.ValueOf(ider)
+	v = direct(v)
+
+	switch v.Kind() {
+	case reflect.String:
+		v.SetString(pid)
+
+	case reflect.Int, reflect.Int16, reflect.Int32, reflect.Int64:
+		n, err := strconv.ParseInt(pid, 10, 64)
+		if err != nil {
+			return err
+		}
+		v.SetInt(int64(n))
+
+	case reflect.Uint, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		n, err := strconv.ParseUint(pid, 10, 64)
+		if err != nil {
+			return err
+		}
+		v.SetUint(n)
+	}
+
+	return nil
+}
+
+func direct(v reflect.Value) reflect.Value {
+	if v.Kind() == reflect.Ptr {
+		v = v.Elem()
+		v = direct(v)
+	}
+
+	return v
 }
 
 // ResOK 响应OK

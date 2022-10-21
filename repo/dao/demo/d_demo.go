@@ -4,7 +4,6 @@ import (
 	"context"
 	"gin-essential/model/entity"
 	"gin-essential/model/vo"
-	"gin-essential/pkg/errors"
 	"gin-essential/repo/dao"
 	"gin-essential/schema"
 
@@ -58,11 +57,9 @@ func (a *Demo) Get(ctx context.Context, demoID int) (*schema.Demo, error) {
 	db := entity.GetDemoDB(ctx, a.PgDB)
 
 	var demo schema.Demo
-	ok, err := dao.FindOne(ctx, db, &demo)
+	_, err := dao.FindOne(ctx, db, &demo)
 	if err != nil {
 		return nil, err
-	} else if !ok {
-		return nil, errors.New500Response("new error")
 	}
 
 	return &demo, nil

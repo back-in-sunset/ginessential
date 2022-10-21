@@ -124,6 +124,50 @@
                 }
             }
         },
+        "/api/users/:id/detail": {
+            "get": {
+                "description": "查询数据",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users 用户"
+                ],
+                "summary": "查询数据",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{staus:\"OK\", data:响应数据}",
+                        "schema": {
+                            "$ref": "#/definitions/schema.User"
+                        }
+                    },
+                    "400": {
+                        "description": "{code:400, status:\"OK\", message:\"请求参数错误\"}",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorItem"
+                        }
+                    },
+                    "404": {
+                        "description": "{code:404, status:\"OK\", message:\"资源不存在\"}",
+                        "schema": {
+                            "$ref": "#/definitions/schema.ErrorItem"
+                        }
+                    }
+                }
+            }
+        },
         "/api/users/{id}": {
             "get": {
                 "description": "查询数据",
