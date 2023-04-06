@@ -3,9 +3,9 @@ package dao
 import (
 	"context"
 	"fmt"
-	contextx "gin-essential/ctx"
-	"gin-essential/model/entity"
-	"gin-essential/schema"
+	contextx "ginessential/ctx"
+	"ginessential/model/entity"
+	"ginessential/schema"
 	"log"
 	"os"
 	"time"

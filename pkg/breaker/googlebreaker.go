@@ -1,9 +1,9 @@
 package breaker
 
 import (
-	"gin-essential/pkg/collection"
-	"gin-essential/pkg/errors"
-	"gin-essential/pkg/mathx"
+	"ginessential/pkg/collection"
+	"ginessential/pkg/errors"
+	"ginessential/pkg/mathx"
 	"math"
 	"time"
 )

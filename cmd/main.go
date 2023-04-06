@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
-	"gin-essential/inject"
-	"gin-essential/repo/dao"
+	"ginessential/inject"
+	"ginessential/repo/dao"
 	"log"
 	"net/http"
 	"os"

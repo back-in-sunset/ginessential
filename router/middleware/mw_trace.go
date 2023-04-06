@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	contextx "gin-essential/ctx"
-	"gin-essential/pkg/utils"
+	contextx "ginessential/ctx"
+	"ginessential/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 )

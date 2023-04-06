@@ -3,8 +3,8 @@ package entity
 import (
 	"context"
 
-	contextx "gin-essential/ctx"
-	"gin-essential/shared/id"
+	contextx "ginessential/ctx"
+	"ginessential/shared/id"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"

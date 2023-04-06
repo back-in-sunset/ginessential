@@ -2,12 +2,12 @@ package ginx
 
 import (
 	"fmt"
-	contextx "gin-essential/ctx"
-	"gin-essential/logger"
-	"gin-essential/pkg/errors"
-	"gin-essential/pkg/jsonx"
-	"gin-essential/schema"
-	"gin-essential/shared/id"
+	contextx "ginessential/ctx"
+	"ginessential/logger"
+	"ginessential/pkg/errors"
+	"ginessential/pkg/jsonx"
+	"ginessential/schema"
+	"ginessential/shared/id"
 	"net/http"
 	"reflect"
 	"strconv"

@@ -4,12 +4,12 @@
 package inject
 
 import (
-	"gin-essential/logger"
-	"gin-essential/repo"
-	"gin-essential/repo/dao"
-	"gin-essential/router"
-	"gin-essential/router/api"
-	"gin-essential/srv"
+	"ginessential/logger"
+	"ginessential/repo"
+	"ginessential/repo/dao"
+	"ginessential/router"
+	"ginessential/router/api"
+	"ginessential/srv"
 
 	"github.com/google/wire"
 )

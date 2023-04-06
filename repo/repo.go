@@ -1,10 +1,10 @@
 package repo
 
 import (
-	"gin-essential/repo/dao"
+	"ginessential/repo/dao"
 
-	demodao "gin-essential/repo/dao/demo"
-	userdao "gin-essential/repo/dao/user"
+	demodao "ginessential/repo/dao/demo"
+	userdao "ginessential/repo/dao/user"
 
 	"github.com/google/wire"
 )

@@ -3,7 +3,7 @@ package middleware
 import (
 	"bytes"
 	"compress/gzip"
-	"gin-essential/ginx"
+	"ginessential/ginx"
 	"io"
 	"io/ioutil"
 	"net/http"

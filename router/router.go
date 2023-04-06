@@ -1,15 +1,15 @@
 package router
 
 import (
-	"gin-essential/router/api"
-	"gin-essential/router/middleware"
+	"ginessential/router/api"
+	"ginessential/router/middleware"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
 
 	// swagger
-	_ "gin-essential/docs"
+	_ "ginessential/docs"
 
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"

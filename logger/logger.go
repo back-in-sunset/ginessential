@@ -2,7 +2,7 @@ package logger
 
 import (
 	"context"
-	contextx "gin-essential/ctx"
+	contextx "ginessential/ctx"
 	"os"
 
 	"github.com/google/wire"

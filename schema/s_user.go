@@ -1,10 +1,10 @@
 package schema
 
 import (
-	"gin-essential/model/vo"
-	"gin-essential/pkg/errors"
-	"gin-essential/pkg/stringx"
-	"gin-essential/shared/id"
+	"ginessential/model/vo"
+	"ginessential/pkg/errors"
+	"ginessential/pkg/stringx"
+	"ginessential/shared/id"
 )
 
 // User 用户
