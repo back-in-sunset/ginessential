@@ -1,7 +1,7 @@
 package collection
 
 import (
-	"gin-essential/pkg/timex"
+	"ginessential/pkg/timex"
 	"sync"
 	"time"
 )

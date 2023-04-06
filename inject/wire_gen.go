@@ -6,12 +6,12 @@
 package inject
 
 import (
-	"gin-essential/logger"
-	"gin-essential/repo/dao"
-	"gin-essential/repo/dao/user"
-	"gin-essential/router"
-	"gin-essential/router/api"
-	"gin-essential/srv/user"
+	"ginessential/logger"
+	"ginessential/repo/dao"
+	"ginessential/repo/dao/user"
+	"ginessential/router"
+	"ginessential/router/api"
+	"ginessential/srv/user"
 )
 
 // Injectors from wire.go:

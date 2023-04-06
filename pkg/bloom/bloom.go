@@ -1,8 +1,8 @@
 package bloom
 
 import (
-	"gin-essential/pkg/errors"
-	"gin-essential/pkg/hashx"
+	"ginessential/pkg/errors"
+	"ginessential/pkg/hashx"
 	"sort"
 	"strconv"
 

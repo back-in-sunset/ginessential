@@ -2,8 +2,8 @@ package entity
 
 import (
 	"context"
-	"gin-essential/model/vo"
-	"gin-essential/shared/id"
+	"ginessential/model/vo"
+	"ginessential/shared/id"
 
 	"gorm.io/gorm"
 )

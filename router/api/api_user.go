@@ -1,15 +1,15 @@
 package api
 
 import (
-	"gin-essential/ginx"
-	"gin-essential/model/vo"
-	"gin-essential/schema"
-	"gin-essential/shared/id"
+	"ginessential/ginx"
+	"ginessential/model/vo"
+	"ginessential/schema"
+	"ginessential/shared/id"
 
-	"gin-essential/pkg/errors"
-	"gin-essential/pkg/utils"
+	"ginessential/pkg/errors"
+	"ginessential/pkg/utils"
 
-	usersrv "gin-essential/srv/user"
+	usersrv "ginessential/srv/user"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"

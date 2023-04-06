@@ -1,7 +1,7 @@
 package srv
 
 import (
-	usersrv "gin-essential/srv/user"
+	usersrv "ginessential/srv/user"
 
 	"github.com/google/wire"
 )

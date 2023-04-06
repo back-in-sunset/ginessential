@@ -1,6 +1,6 @@
 package id
 
-import "gin-essential/pkg/utils"
+import "ginessential/pkg/utils"
 
 // ObjID 对象ID
 type ObjID string

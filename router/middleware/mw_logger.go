@@ -3,8 +3,8 @@ package middleware
 import (
 	"encoding/json"
 	"fmt"
-	"gin-essential/ginx"
-	"gin-essential/logger"
+	"ginessential/ginx"
+	"ginessential/logger"
 	"mime"
 	"net/http"
 	"time"

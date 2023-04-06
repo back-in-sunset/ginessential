@@ -1,8 +1,8 @@
 package schema
 
 import (
-	"gin-essential/model/vo"
-	"gin-essential/shared/id"
+	"ginessential/model/vo"
+	"ginessential/shared/id"
 )
 
 // Demo 用户

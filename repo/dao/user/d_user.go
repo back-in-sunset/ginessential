@@ -2,10 +2,10 @@ package userdao
 
 import (
 	"context"
-	"gin-essential/model/entity"
-	"gin-essential/repo/dao"
-	"gin-essential/schema"
-	"gin-essential/shared/id"
+	"ginessential/model/entity"
+	"ginessential/repo/dao"
+	"ginessential/schema"
+	"ginessential/shared/id"
 
 	"github.com/google/wire"
 	"gorm.io/gorm"

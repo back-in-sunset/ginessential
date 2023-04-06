@@ -2,11 +2,11 @@ package breaker
 
 import (
 	"fmt"
-	"gin-essential/pkg/mathx"
-	"gin-essential/pkg/proc"
-	"gin-essential/pkg/stat"
-	"gin-essential/pkg/stringx"
-	"gin-essential/pkg/timex"
+	"ginessential/pkg/mathx"
+	"ginessential/pkg/proc"
+	"ginessential/pkg/stat"
+	"ginessential/pkg/stringx"
+	"ginessential/pkg/timex"
 	"strings"
 	"sync"
 )

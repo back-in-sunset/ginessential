@@ -2,10 +2,10 @@ package usersrv
 
 import (
 	"context"
-	"gin-essential/repo/dao"
-	userdao "gin-essential/repo/dao/user"
-	"gin-essential/schema"
-	"gin-essential/shared/id"
+	"ginessential/repo/dao"
+	userdao "ginessential/repo/dao/user"
+	"ginessential/schema"
+	"ginessential/shared/id"
 
 	"github.com/google/wire"
 )

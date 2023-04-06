@@ -2,10 +2,10 @@ package demodao
 
 import (
 	"context"
-	"gin-essential/model/entity"
-	"gin-essential/model/vo"
-	"gin-essential/repo/dao"
-	"gin-essential/schema"
+	"ginessential/model/entity"
+	"ginessential/model/vo"
+	"ginessential/repo/dao"
+	"ginessential/schema"
 
 	"github.com/google/wire"
 	"gorm.io/gorm"
