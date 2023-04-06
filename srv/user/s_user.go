@@ -2,7 +2,6 @@ package usersrv
 
 import (
 	"context"
-	"gin-essential/pkg/utils"
 	"gin-essential/repo/dao"
 	userdao "gin-essential/repo/dao/user"
 	"gin-essential/schema"
@@ -37,7 +36,7 @@ func (a *User) IsTelePhoneExist(ctx context.Context, telephone string) bool {
 // Register 用户注册
 func (a *User) Register(ctx context.Context, user schema.User) error {
 	return a.Trans.Exec(ctx, func(ctx context.Context) error {
-		user.UserID = id.ObjID(utils.MustUUID()).ToUserID()
+		user.UserID = id.NewObjID().ToUserID()
 		err := a.UserDB.Create(ctx, user)
 		if err != nil {
 			return err
@@ -53,16 +52,16 @@ func (a *User) QueryPage(ctx context.Context, params schema.UserQueryParams) (*s
 }
 
 // Get 查询单条数据
-func (a *User) Get(ctx context.Context, userID string) (*schema.User, error) {
+func (a *User) Get(ctx context.Context, userID id.UserID) (*schema.User, error) {
 	return a.UserDB.Get(ctx, userID)
 }
 
 // Update 更新用户数据
-func (a *User) Update(ctx context.Context, userID string, user schema.User) error {
+func (a *User) Update(ctx context.Context, userID id.UserID, user schema.User) error {
 	return a.UserDB.Update(ctx, userID, user)
 }
 
 // Delete 删除数据
-func (a *User) Delete(ctx context.Context, userID string) error {
+func (a *User) Delete(ctx context.Context, userID id.UserID) error {
 	return a.UserDB.Delete(ctx, userID)
 }

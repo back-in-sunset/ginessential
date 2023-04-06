@@ -1,6 +1,6 @@
 package id
 
-import "fmt"
+import "gin-essential/pkg/utils"
 
 // ObjID 对象ID
 type ObjID string
@@ -20,9 +20,18 @@ func (o ObjID) ToRoleID() RoleID {
 	return RoleID(o)
 }
 
-// FromID gen ObjID
-func FromID(eid fmt.Stringer) ObjID {
-	return ObjID(eid.String())
+func (o ObjID) String() string {
+	return string(o)
+}
+
+// NewObjID new objid
+func NewObjID() ObjID {
+	return ObjID(utils.NanoNumbID())
+}
+
+// IDer IDer
+type IDer interface {
+	String() string
 }
 
 // DemoID demo id
