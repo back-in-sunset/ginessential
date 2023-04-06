@@ -35,8 +35,7 @@ require (
 	go.uber.org/multierr v1.8.0 // indirect
 	go.uber.org/zap v1.21.0
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa
-	golang.org/x/net v0.0.0-20220726230323-06994584191e // indirect
-	golang.org/x/sys v0.0.0-20220727055044-e65921a090b8 // indirect
+	golang.org/x/net v0.7.0 // indirect
 	gopkg.in/validator.v2 v2.0.1
 	gorm.io/driver/postgres v1.3.4
 	gorm.io/gorm v1.23.8 // direct
