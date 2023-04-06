@@ -20,8 +20,8 @@ var (
 	UnmarshalWithOption = json.UnmarshalWithOption
 	UnmarshalNoEscape   = json.UnmarshalNoEscape
 
-	NewDecode = json.NewDecoder
-	Encoder   = json.NewEncoder
+	NewDecode  = json.NewDecoder
+	NewEncoder = json.NewEncoder
 )
 
 // EncoderOption ..
@@ -36,7 +36,7 @@ func EncoderWithIndentOpt(prefix string, indent string) func(*json.Encoder) {
 
 // EncodeW encode v to w
 func EncodeW(w io.Writer, v interface{}, opts ...EncoderOption) error {
-	encoder := Encoder(w)
+	encoder := NewEncoder(w)
 
 	for _, opt := range opts {
 		opt(encoder)

@@ -16,6 +16,7 @@ var DemoSet = wire.NewSet(wire.Struct(new(Demo), "*"))
 
 // Demo 用户DB
 type Demo struct {
+	// Logger
 	PgDB *gorm.DB
 }
 
@@ -39,7 +40,7 @@ func (a *Demo) Query(ctx context.Context, params schema.DemoQueryParams) (*schem
 		db = db.Where("name like ?", "%"+v+"%")
 	}
 
-	db.Order("id DESC")
+	db = db.Order("id DESC")
 	var result schema.Demos
 	pr, err := dao.WrapPageQuery(db, params.PaginationParam, &result)
 	if err != nil {

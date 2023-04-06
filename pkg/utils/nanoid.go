@@ -11,7 +11,7 @@ func MustNanoID() string {
 
 // NanoNumbID ..
 func NanoNumbID() string {
-	s, err := gonanoid.Generate("123456789", 36)
+	s, err := gonanoid.Generate("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789", 8)
 	if err != nil {
 		panic(err)
 	}
